@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRIMORDIAL COMMAND CENTER v3.0 ULTIMATE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+  :root {
+    --void: #00000a;
+    --panel: rgba(0,20,60,0.9);
+    --neon-cyan: #00f5ff;
+    --neon-blue: #0088ff;
+    --neon-green: #00ff88;
+    --neon-amber: #ffaa00;
+    --neon-red: #ff3355;
+    --neon-purple: #cc44ff;
+    --neon-ocean: #00ffcc;
+    --text-dim: rgba(0,245,255,0.4);
+    --text-mid: rgba(0,245,255,0.7);
+    --glow-cyan: 0 0 10px #00f5ff;
+    --glow-fire: 0 0 15px #ff3355, 0 0 30px rgba(255,51,85,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--neon-cyan);
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    width: 100vw; height: 100vh;
+    user-select: none;
+  }
+
+  #starfield {
+    position: fixed; inset: 0; z-index: 0;
+  }
+
+  #app {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-rows: 50px 1fr 160px;
+    grid-template-columns: 280px 1fr 280px;
+    width: 100vw; height: 100vh;
+    gap: 2px;
+  }
+
+  #header {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(0,10,40,0.95);
+    border-bottom: 1px solid rgba(0,245,255,0.3);
+  }
+
+  #header h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px; font-weight: 900;
+    letter-spacing: 5px;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+  }
+
+  .header-status {
+    display: flex; gap: 25px; align-items: center;
+    font-size: 10px; color: var(--text-mid);
+  }
+
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block; margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  .dot-live { background: var(--neon-green); box-shadow: 0 0 10px #00ff88; }
+  .dot-fire { background: var(--neon-red); box-shadow: var(--glow-fire); animation-delay: 0.3s; }
+  .dot-ice { background: var(--neon-cyan); box-shadow: var(--glow-cyan); animation-delay: 0.6s; }
+  .dot-nasa { background: var(--neon-blue); animation-delay: 0.9s; }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.9); }
+  }
+
+  .mode-toggle {
+    display: flex; gap: 3px;
+  }
+  .mode-btn {
+    padding: 5px 14px; font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: 2px;
+    border: 1px solid currentColor; background: transparent;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .mode-btn.space { color: var(--neon-blue); }
+  .mode-btn.ocean { color: var(--neon-ocean); }
+  .mode-btn.active { background: rgba(0,136,255,0.25); box-shadow: var(--glow-cyan); }
+
+  #panel-left, #panel-right {
+    background: var(--panel);
+    overflow-y: auto; overflow-x: hidden;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #panel-left { border-right: 1px solid rgba(0,245,255,0.15); }
+  #panel-right { border-left: 1px solid rgba(0,245,255,0.15); }
+
+  #viewport {
+    position: relative;
+    background: var(--void);
+    overflow: hidden;
+  }
+
+  #main-canvas {
+    width: 100%; height: 100%;
+    display: block;
+  }
+
+  #crosshair {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px; height: 40px;
+    pointer-events: none;
+  }
+  #crosshair::before, #crosshair::after {
+    content: '';position:absolute;background:rgba(0,245,255,0.5);
+  }
+  #crosshair::before { width:1px;height:100%;left:50%;top:0; }
+  #crosshair::after { width:100%;height:1px;top:50%;left:0; }
+
+  .crosshair-ring {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 50%; border: 1px solid rgba(0,245,255,0.3);
+    animation: ringpulse 3s infinite;
+    pointer-events: none;
+  }
+  @keyframes ringpulse {
+    0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3}
+    50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.05}
+  }
+
+  #coords-hud, #velocity-hud {
+    position: absolute; font-size: 9px; color: var(--text-mid); line-height: 2;
+    pointer-events: none;
+  }
+  #coords-hud { bottom: 15px; left: 15px; }
+  #velocity-hud { top: 15px; right: 15px; text-align: right; }
+
+  #bottom-controls {
+    grid-column: 1 / -1;
+    background: rgba(0,8,28,0.95);
+    border-top: 1px solid rgba(0,245,255,0.2);
+    display: grid;
+    grid-template-columns: 1fr 320px 1fr;
+    padding: 10px 15px;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .panel-section {
+    border: 1px solid rgba(0,245,255,0.1);
+    padding: 10px;
+    background: rgba(0,10,30,0.4);
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: 3px;
+    color: var(--text-dim); margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+    padding-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .data-row {
+    display: flex; justify-content: space-between;
+    font-size: 9px; margin-bottom: 4px; color: var(--text-mid);
+  }
+  .data-label { opacity: 0.7; }
+  .data-val { color: var(--neon-cyan); font-weight: bold; }
+  .data-val.green { color: var(--neon-green); }
+  .data-val.amber { color: var(--neon-amber); }
+  .data-val.red { color: var(--neon-red); }
+  .data-val.fire { color: var(--neon-red); text-shadow: var(--glow-fire); }
+  .data-val.ice { color: var(--neon-cyan); }
+  .data-val.nasa { color: var(--neon-blue); }
+
+  .meter-bar {
+    height: 5px; background: rgba(255,255,255,0.04);
+    margin: 4px 0 8px; position: relative; border-radius: 2px;
+  }
+  .meter-fill {
+    height: 100%; transition: width 0.5s ease; border-radius: 2px;
+  }
+  .meter-cyan .meter-fill { background: var(--neon-cyan); box-shadow: var(--glow-cyan); }
+  .meter-fire .meter-fill { background: var(--neon-red); box-shadow: var(--glow-fire); }
+
+  .ctrl-label {
+    font-size: 9px; color: var(--text-dim); margin-bottom: 4px; display: block;
+  }
+
+  input[type=range] {
+    width: 100%; height: 5px; margin: 5px 0 10px;
+    -webkit-appearance: none; background: rgba(0,245,255,0.08);
+    border-radius: 3px; outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--neon-cyan);
+    box-shadow: var(--glow-cyan);
+  }
+
+  #propulsion-grid {
+    display: grid; grid-template-columns: repeat(3,38px);
+    grid-template-rows: repeat(3,38px); gap: 4px;
+    justify-content: center;
+  }
+  .thrust-btn {
+    border: 1px solid rgba(0,245,255,0.3);
+    background: rgba(0,30,80,0.6);
+    color: var(--neon-cyan); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; transition: all 0.15s;
+    border-radius: 3px;
+  }
+  .thrust-btn:hover { background: rgba(0,136,255,0.3); box-shadow: var(--glow-cyan); transform: scale(1.05); }
+  .thrust-btn:active { transform: scale(0.95); }
+  .thrust-btn.center { font-size: 9px; font-family: 'Orbitron', monospace; }
+
+  #log-console {
+    font-size: 8px; line-height: 1.9; max-height: 110px;
+    overflow-y: auto; color: var(--text-mid);
+  }
+  .log-line { border-bottom: 1px solid rgba(0,245,255,0.02); padding: 2px 0; }
+  .log-time { color: var(--text-dim); margin-right: 8px; }
+  .log-info { color: var(--neon-cyan); }
+  .log-warn { color: var(--neon-amber); }
+  .log-data { color: var(--neon-green); }
+  .log-fire { color: var(--neon-red); }
+  .log-ice { color: var(--neon-cyan); }
+  .log-nasa { color: var(--neon-blue); }
+
+  #waveform-canvas, #spectrum-canvas { width: 100%; display: block; }
+  #waveform-canvas { height: 45px; }
+  #spectrum-canvas { height: 35px; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.2); border-radius: 2px; }
+
+  #scanlines {
+    position: fixed; inset: 0; z-index: 100; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  }
+
+  .live-badge {
+    font-size: 9px; padding: 3px 8px;
+    border: 1px solid var(--neon-red);
+    color: var(--neon-red); animation: pulse 1.5s infinite;
+    font-family: 'Orbitron', monospace; letter-spacing: 2px;
+    border-radius: 2px;
+  }
+
+  .bottom-section { display: flex; flex-direction: column; gap: 8px; }
+  .bottom-label {
+    font-family: 'Orbitron', monospace; font-size: 9px;
+    letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+  }
+
+  .btn-small {
+    padding: 5px 10px; font-family: 'Orbitron', monospace;
+    font-size: 8px; letter-spacing: 1.5px; font-weight: 700;
+    border: 1px solid currentColor; background: rgba(0,20,60,0.3);
+    cursor: pointer; transition: all 0.2s; width: 100%; margin-bottom: 4px;
+    border-radius: 2px;
+  }
+  .btn-cyan { color: var(--neon-cyan); }
+  .btn-cyan:hover { background: rgba(0,245,255,0.2); box-shadow: var(--glow-cyan); }
+  .btn-fire { color: var(--neon-red); }
+  .btn-fire:hover { background: rgba(255,51,85,0.15); box-shadow: var(--glow-fire); }
+  .btn-ice { color: var(--neon-cyan); }
+  .btn-ice:hover { background: rgba(0,245,255,0.15); box-shadow: var(--glow-cyan); }
+  .btn-nasa { color: var(--neon-blue); }
+  .btn-nasa:hover { background: rgba(0,136,255,0.2); }
+
+  .data-list {
+    font-size: 8px; max-height: 180px; overflow-y: auto;
+    border-top: 1px solid rgba(0,245,255,0.05);
+    padding-top: 6px; margin-top: 6px;
+  }
+  .data-item {
+    padding: 5px 7px; margin-bottom: 3px;
+    background: rgba(0,20,50,0.4);
+    border-left: 2px solid var(--neon-cyan);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .data-item:hover {
+    background: rgba(0,40,100,0.5);
+    border-left-color: var(--neon-green);
+  }
+  .data-item.fire { border-left-color: var(--neon-red); }
+  .data-item.ice { border-left-color: var(--neon-cyan); }
+  .item-title { font-weight: bold; margin-bottom: 2px; }
+  .item-meta { opacity: 0.6; font-size: 7px; }
+
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div id="scanlines"></div>
+
+<div id="app">
+  <header id="header">
+    <h1>⬡ PRIMORDIAL COMMAND CENTER v3.0</h1>
+    <div class="header-status">
+      <span><span class="status-dot dot-live"></span>LIVE</span>
+      <span id="live-time">00:00:00 UTC</span>
+      <span><span class="status-dot dot-fire"></span><span id="fire-count">0</span> FIRES</span>
+      <span><span class="status-dot dot-ice"></span>ICE TRACK</span>
+      <span><span class="status-dot dot-nasa"></span>NASA CMR</span>
+      <div class="live-badge">● REC</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn space active" onclick="setMode('space')">SPACE</button>
+      <button class="mode-btn ocean" onclick="setMode('ocean')">OCEAN</button>
+    </div>
+  </header>
+
+  <div id="panel-left">
+
+    <div class="panel-section">
+      <div class="section-title">
+        <span>◈ NAVIGATION</span>
+      </div>
+      <div class="data-row"><span class="data-label">POSITION X</span><span class="data-val" id="pos-x">0.000 AU</span></div>
+      <div class="data-row"><span class="data-label">POSITION Y</span><span class="data-val" id="pos-y">0.000 AU</span></div>
+      <div class="data-row"><span class="data-label">POSITION Z</span><span class="data-val" id="pos-z">0.000 AU</span></div>
+      <div class="data-row"><span class="data-label">VELOCITY</span><span class="data-val green" id="vel-total">0.000 km/s</span></div>
+      <div class="data-row"><span class="data-label">% LIGHT C</span><span class="data-val amber" id="pct-c">0.000%</span></div>
+      <br>
+      <label class="ctrl-label">THRUST POWER</label>
+      <input type="range" id="thrust-power" min="0.1" max="100" value="1" step="0.1">
+      <label class="ctrl-label">WARP FACTOR</label>
+      <input type="range" id="warp-factor" min="1" max="10" value="1" step="0.1">
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title"><span>◈ ENVIRONMENT</span></div>
+      <div class="data-row"><span class="data-label">TEMP</span><span class="data-val" id="env-temp">2.7 K</span></div>
+      <div class="data-row"><span class="data-label">RADIATION</span><span class="data-val red" id="env-rad">0.1 Sv/h</span></div>
+      <div class="meter-bar meter-cyan"><div class="meter-fill" id="rad-meter" style="width:10%"></div></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title"><span>◈ ACOUSTIC SPECTRUM</span></div>
+      <canvas id="spectrum-canvas"></canvas>
+      <div class="data-row" style="margin-top:6px"><span class="data-label">SOFAR CH</span><span class="data-val" id="sofar-depth">1000m</span></div>
+      <div class="data-row"><span class="data-label">SOUND SPD</span><span class="data-val" id="sound-speed">1500 m/s</span></div>
+    </div>
+
+  </div>
+
+  <div id="viewport">
+    <canvas id="main-canvas"></canvas>
+    <div id="crosshair">
+      <div class="crosshair-ring" style="width:25px;height:25px"></div>
+      <div class="crosshair-ring" style="width:65px;height:65px;animation-delay:1s"></div>
+      <div class="crosshair-ring" style="width:110px;height:110px;animation-delay:2s"></div>
+    </div>
+    <div id="coords-hud">
+      <div>RA: <span id="hud-ra">00h00m00s</span></div>
+      <div>DEC: <span id="hud-dec">+00°00'</span></div>
+      <div>FOV: <span id="hud-fov">1.0°</span></div>
+    </div>
+    <div id="velocity-hud">
+      <div>V: <span id="hud-vel">0.00</span> km/s</div>
+      <div>BEAR: <span id="hud-bear">000°</span></div>
+      <div>THR: <span id="hud-throttle">0%</span></div>
+    </div>
+  </div>
+
+  <div id="panel-right">
+
+    <div class="panel-section">
+      <div class="section-title">
+        <span>◈ LIVE FIRE TRACKING</span>
+        <span class="data-val fire" id="fire-status">STANDBY</span>
+      </div>
+      <div class="data-row"><span class="data-label">MODIS/VIIRS</span><span class="data-val nasa" id="fire-sensor">NRT READY</span></div>
+      <div class="data-row"><span class="data-label">DETECTIONS</span><span class="data-val fire" id="fire-detected">0</span></div>
+      <div class="data-row"><span class="data-label">COVERAGE</span><span class="data-val green" id="fire-coverage">GLOBAL</span></div>
+      <div class="meter-bar meter-fire"><div class="meter-fill" id="fire-meter" style="width:0%"></div></div>
+      <button class="btn-small btn-fire" onclick="fetchGlobalFires()">🔥 SCAN GLOBAL FIRES</button>
+      <button class="btn-small btn-fire" onclick="fetchUSFires()">📍 US/CANADA FIRES</button>
+      <button class="btn-small btn-fire" onclick="fetchAustraliaFires()">🌏 AUSTRALIA FIRES</button>
+      <div id="fire-list" class="data-list"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title">
+        <span>◈ ICE SHEET MONITOR</span>
+        <span class="data-val ice" id="ice-status">TRACKING</span>
+      </div>
+      <div class="data-row"><span class="data-label">ICESat-2</span><span class="data-val nasa">ACTIVE</span></div>
+      <div class="data-row"><span class="data-label">ITS_LIVE</span><span class="data-val green">STREAMING</span></div>
+      <div class="data-row"><span class="data-label">GREENLAND</span><span class="data-val ice" id="greenland-status">NOMINAL</span></div>
+      <div class="data-row"><span class="data-label">ANTARCTICA</span><span class="data-val ice" id="antarctica-status">NOMINAL</span></div>
+      <button class="btn-small btn-ice" onclick="fetchIceData()">❄ QUERY ICE VELOCITY</button>
+      <button class="btn-small btn-ice" onclick="fetchGreenlandData()">🗻 GREENLAND GLACIERS</button>
+      <button class="btn-small btn-ice" onclick="fetchAntarcticaData()">🧊 ANTARCTICA SHEETS</button>
+      <div id="ice-list" class="data-list"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title"><span>◈ NASA COLLECTIONS</span></div>
+      <div class="data-row"><span class="data-label">TOKEN</span><span class="data-val nasa">AUTH</span></div>
+      <div class="data-row"><span class="data-label">CMR STATUS</span><span class="data-val green" id="cmr-status">ONLINE</span></div>
+      <button class="btn-small btn-nasa" onclick="fetchNASACollections()">⟳ QUERY CMR</button>
+      <div id="nasa-list" class="data-list"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title"><span>◈ PRIMORDIAL ACOUSTICS</span></div>
+      <canvas id="waveform-canvas"></canvas>
+      <div class="data-row" style="margin-top:6px"><span class="data-label">CMB TEMP</span><span class="data-val">2.725 K</span></div>
+      <div class="data-row"><span class="data-label">REDSHIFT</span><span class="data-val amber" id="redshift-val">z=1100</span></div>
+      <label class="ctrl-label" style="margin-top:6px">REDSHIFT PROBE</label>
+      <input type="range" id="redshift-range" min="0" max="1100" value="1100" step="10">
+    </div>
+
+  </div>
+
+  <div id="bottom-controls">
+
+    <div class="bottom-section">
+      <div class="bottom-label">PROPULSION CONTROL</div>
+      <div style="display:flex;gap:18px;align-items:center">
+        <div id="propulsion-grid">
+          <div></div>
+          <button class="thrust-btn" onclick="thrust(0,-1,0)">↑</button>
+          <div></div>
+          <button class="thrust-btn" onclick="thrust(-1,0,0)">←</button>
+          <button class="thrust-btn center" onclick="stopThrust()">STOP</button>
+          <button class="thrust-btn" onclick="thrust(1,0,0)">→</button>
+          <div></div>
+          <button class="thrust-btn" onclick="thrust(0,1,0)">↓</button>
+          <div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <button class="thrust-btn" style="width:85px;font-size:11px" onclick="thrust(0,0,-1)">▲ FWD</button>
+          <button class="thrust-btn" style="width:85px;font-size:11px" onclick="thrust(0,0,1)">▼ REV</button>
+          <button class="thrust-btn" style="width:85px;font-size:9px;color:var(--neon-amber)" onclick="fullStop()">⊗ STOP</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-section" style="align-items:center">
+      <div class="bottom-label" style="text-align:center">SYSTEM STATUS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;font-size:9px;margin-top:5px">
+        <div class="data-row"><span>SHIELDS</span><span class="data-val green">100%</span></div>
+        <div class="data-row"><span>POWER</span><span class="data-val green">98%</span></div>
+        <div class="data-row"><span>SENSORS</span><span class="data-val green">OK</span></div>
+        <div class="data-row"><span>NASA API</span><span class="data-val nasa">LIVE</span></div>
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <div class="bottom-label">MISSION LOG</div>
+      <div id="log-console"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// NASA TOKEN
+const NASA_TOKEN = 'eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImV2aWVrcmFuamFrIiwiZXhwIjoxNzc2NTQwMTg5LCJpYXQiOjE3NzEzNTYxODksImlzcyI6Imh0dHBzOi8vdXJzLmVhcnRoZGF0YS5uYXNhLmdvdiIsImlkZW50aXR5X3Byb3ZpZGVyIjoiZWRsX29wcyIsImFjciI6ImVkbCIsImFzc3VyYW5jZV9sZXZlbCI6M30.GLVRw2bmm5z5LW6sGtqLrXPmDHeCBzdVvsYnKRdHWq5ggM6llkpwkeS3rfu5Yn9TiY3A4CnYFcSRPXemlCwoykFsZppzTsa3efrSPHpLBfTuVisI06TbWS45tFrzGhfYAd9mznwM_FzHu9jpUBsqovmS3eUMsy1xe6-jo5bokwDak1fYFEXydeBNJA6HogFOObd9JDVoLtDk10543Ry_vV4QIby71yQg9ztF8DWhUrn1vsB3bgoQMJdwHfebjsnZgh36VYJHvkEHGVWCPLcWDw622_59xEbXePC6e6fF_1-xWGo1mU-9oD6QCpvDj2W4KAfWg6t1bz_ur1Iyu9H1pg';
+
+const STATE = {
+  mode: 'space',
+  pos: { x: 0, y: 0, z: 0 },
+  vel: { x: 0, y: 0, z: 0 },
+  warpFactor: 1,
+  thrustPower: 1,
+  redshift: 1100,
+  tick: 0,
+  fov: 1.0,
+  viewAngleX: 0,
+  viewAngleY: 0,
+  oceanDepth: 0,
+  isDragging: false,
+  lastMouse: { x: 0, y: 0 },
+  fires: [],
+  iceData: [],
+  nasaCollections: []
+};
+
+const OBJECTS = {
+  sun:     { name: 'SUN', x: 0, y: 0, z: 0, color: '#ffdd44', size: 20 },
+  earth:   { name: 'EARTH', x: 1.0, y: 0, z: 0, color: '#4488ff', size: 10 },
+  mars:    { name: 'MARS', x: 1.52, y: -0.15, z: 0.03, color: '#ff6633', size: 6 },
+  jupiter: { name: 'JUPITER', x: 5.2, y: 0.3, z: -0.1, color: '#ffaa66', size: 16 },
+};
+
+// STARFIELD
+const sfCanvas = document.getElementById('starfield');
+const sfCtx = sfCanvas.getContext('2d');
+let stars = [];
+
+function initStars() {
+  sfCanvas.width = window.innerWidth;
+  sfCanvas.height = window.innerHeight;
+  stars = Array.from({length: 1000}, () => ({
+    x: Math.random() * sfCanvas.width,
+    y: Math.random() * sfCanvas.height,
+    r: Math.random() * 1.8,
+    brightness: Math.random(),
+    twinkle: Math.random() * Math.PI * 2
+  }));
+}
+
+function renderStarfield() {
+  sfCtx.clearRect(0, 0, sfCanvas.width, sfCanvas.height);
+  const t = Date.now() * 0.001;
+  stars.forEach(s => {
+    const tw = 0.6 + 0.4 * Math.sin(t * 0.5 + s.twinkle);
+    sfCtx.beginPath();
+    sfCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    sfCtx.fillStyle = `rgba(220,230,255,${s.brightness * tw})`;
+    sfCtx.fill();
+  });
+}
+
+// MAIN VIEWPORT
+const mainCanvas = document.getElementById('main-canvas');
+const ctx = mainCanvas.getContext('2d');
+
+function resizeCanvases() {
+  const vp = document.getElementById('viewport');
+  mainCanvas.width = vp.clientWidth;
+  mainCanvas.height = vp.clientHeight;
+}
+
+function renderSpace() {
+  const W = mainCanvas.width, H = mainCanvas.height;
+  ctx.clearRect(0, 0, W, H);
+  
+  const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W/1.5);
+  grad.addColorStop(0, 'rgba(0,15,40,0.9)');
+  grad.addColorStop(1, 'rgba(0,0,10,0.98)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  
+  // Grid
+  ctx.strokeStyle = 'rgba(0,245,255,0.04)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x <= W; x += W/8) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y <= H; y += H/8) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  
+  // Objects
+  Object.values(OBJECTS).forEach(obj => {
+    const sx = W/2 + obj.x * 50;
+    const sy = H/2 + obj.y * 50;
+    const r = obj.size || 8;
+    
+    // Glow
+    const glowGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 5);
+    glowGrad.addColorStop(0, obj.color + '88');
+    glowGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath();
+    ctx.arc(sx, sy, r * 5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Body
+    ctx.beginPath();
+    ctx.arc(sx, sy, r, 0, Math.PI * 2);
+    ctx.fillStyle = obj.color;
+    ctx.fill();
+    
+    // Label
+    ctx.fillStyle = 'rgba(0,245,255,0.7)';
+    ctx.font = '9px Share Tech Mono';
+    ctx.fillText(obj.name, sx + r + 6, sy + 4);
+  });
+  
+  // Fire markers
+  STATE.fires.forEach((fire, i) => {
+    const fx = W * (fire.longitude + 180) / 360;
+    const fy = H * (90 - fire.latitude) / 180;
+    
+    ctx.beginPath();
+    ctx.arc(fx, fy, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#ff3355';
+    ctx.fill();
+    
+    const t = Date.now() * 0.001;
+    ctx.strokeStyle = `rgba(255,51,85,${0.5 + 0.5 * Math.sin(t * 3 + i)})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(fx, fy, 8 + Math.sin(t * 2 + i) * 3, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+}
+
+function renderOcean() {
+  const W = mainCanvas.width, H = mainCanvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const t = Date.now() * 0.001;
+  
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#001520');
+  grad.addColorStop(1, '#002540');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  
+  // Bioluminescence
+  for (let i = 0; i < 40; i++) {
+    const px = (Math.sin(t * 0.3 + i * 2.5) * 0.5 + 0.5) * W;
+    const py = (Math.sin(t * 0.25 + i * 3.5) * 0.5 + 0.5) * H;
+    const bright = Math.sin(t * 1.8 + i) * 0.5 + 0.5;
+    ctx.beginPath();
+    ctx.arc(px, py, 3 + bright * 3, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(0,255,200,${bright * 0.7})`;
+    ctx.fill();
+  }
+  
+  // Sound waves
+  for (let i = 0; i < 6; i++) {
+    const phase = ((t * 0.5 + i / 6) % 1);
+    const radius = phase * W;
+    ctx.beginPath();
+    ctx.ellipse(W/2, H/2, radius, radius * 0.25, 0, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(0,255,204,${(1-phase) * 0.4})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+}
+
+// WAVEFORM
+const wfCanvas = document.getElementById('waveform-canvas');
+const wfCtx = wfCanvas.getContext('2d');
+
+function renderWaveform() {
+  const W = 250, H = 45;
+  wfCanvas.width = W; wfCanvas.height = H;
+  wfCtx.clearRect(0,0,W,H);
+  const t = Date.now() * 0.001;
+  const z = STATE.redshift / 1100;
+  
+  wfCtx.beginPath();
+  for (let x = 0; x < W; x++) {
+    const phase = (x / W) * Math.PI * 10 * z;
+    const y = H/2 + Math.sin(phase + t * 2.5) * (H/2 - 5) * 0.65;
+    if (x === 0) wfCtx.moveTo(x, y); else wfCtx.lineTo(x, y);
+  }
+  wfCtx.strokeStyle = '#cc44ff';
+  wfCtx.lineWidth = 2;
+  wfCtx.shadowBlur = 10;
+  wfCtx.shadowColor = '#cc44ff';
+  wfCtx.stroke();
+  wfCtx.shadowBlur = 0;
+}
+
+// SPECTRUM
+const spCanvas = document.getElementById('spectrum-canvas');
+const spCtx = spCanvas.getContext('2d');
+
+function renderSpectrum() {
+  const W = 250, H = 35;
+  spCanvas.width = W; spCanvas.height = H;
+  spCtx.clearRect(0,0,W,H);
+  const t = Date.now() * 0.001;
+  
+  for (let i = 0; i < 50; i++) {
+    const x = (i / 50) * W;
+    const bw = (W / 50) - 1;
+    const h = (Math.sin(i * 0.7 + t * 2) * 0.5 + 0.5) * H * 0.7;
+    const r = i / 50;
+    spCtx.fillStyle = `rgba(0,${Math.floor(255*(1-r*0.5))},${Math.floor(255*(1-r))},0.8)`;
+    spCtx.fillRect(x, H - h, bw, h);
+  }
+}
+
+// PHYSICS
+function updatePhysics() {
+  STATE.vel.x *= 0.98;
+  STATE.vel.y *= 0.98;
+  STATE.vel.z *= 0.98;
+  
+  STATE.pos.x += STATE.vel.x * 0.01;
+  STATE.pos.y += STATE.vel.y * 0.01;
+  STATE.pos.z += STATE.vel.z * 0.01;
+  
+  if (STATE.mode === 'ocean') STATE.oceanDepth = STATE.pos.y;
+}
+
+// UI UPDATE
+function updateUI() {
+  const utc = new Date().toUTCString().slice(-12,-4);
+  document.getElementById('live-time').textContent = utc + ' UTC';
+  
+  const velMag = Math.sqrt(STATE.vel.x**2 + STATE.vel.y**2 + STATE.vel.z**2);
+  
+  document.getElementById('pos-x').textContent = `${STATE.pos.x.toFixed(3)} AU`;
+  document.getElementById('pos-y').textContent = `${STATE.pos.y.toFixed(3)} AU`;
+  document.getElementById('pos-z').textContent = `${STATE.pos.z.toFixed(3)} AU`;
+  document.getElementById('vel-total').textContent = `${velMag.toFixed(3)} km/s`;
+  document.getElementById('pct-c').textContent = `${(velMag / 299792.458 * 100).toFixed(5)}%`;
+  
+  document.getElementById('hud-vel').textContent = velMag.toFixed(2);
+  document.getElementById('hud-fov').textContent = `${STATE.fov.toFixed(1)}°`;
+  document.getElementById('hud-throttle').textContent = `${STATE.thrustPower.toFixed(0)}%`;
+  
+  document.getElementById('fire-count').textContent = STATE.fires.length;
+  
+  const depth = Math.abs(STATE.oceanDepth);
+  const soundSpeed = 1449.2 + 4.6 * 4 + 0.016 * depth;
+  document.getElementById('sound-speed').textContent = `${soundSpeed.toFixed(0)} m/s`;
+  
+  document.getElementById('redshift-val').textContent = `z=${STATE.redshift}`;
+  
+  STATE.tick++;
+}
+
+// CONTROLS
+function thrust(dx, dy, dz) {
+  const p = STATE.thrustPower * STATE.warpFactor;
+  STATE.vel.x += dx * p * 0.5;
+  STATE.vel.y += dy * p * 0.5;
+  STATE.vel.z += dz * p * 0.5;
+  addLog(`THRUST [${dx},${dy},${dz}] × ${p.toFixed(1)}`, 'info');
+}
+
+function stopThrust() {
+  STATE.vel.x *= 0.5; STATE.vel.y *= 0.5; STATE.vel.z *= 0.5;
+  addLog('THRUST REDUCED 50%', 'warn');
+}
+
+function fullStop() {
+  STATE.vel.x = 0; STATE.vel.y = 0; STATE.vel.z = 0;
+  addLog('FULL STOP', 'warn');
+}
+
+function setMode(mode) {
+  STATE.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.mode-btn.${mode}`).classList.add('active');
+  addLog(`MODE: ${mode.toUpperCase()}`, 'info');
+}
+
+// NASA FIRE API
+async function fetchGlobalFires() {
+  addLog('SCANNING GLOBAL FIRES — MODIS/VIIRS NRT...', 'fire');
+  document.getElementById('fire-status').textContent = 'SCANNING';
+  
+  // NOTE: FIRMS API requires a MAP_KEY which users must register for at firms.modaps.eosdis.nasa.gov
+  // For demonstration, we'll simulate the response structure
+  
+  addLog('⚠ FIRMS API requires MAP_KEY registration', 'warn');
+  addLog('Visit: firms.modaps.eosdis.nasa.gov/api/map_key/', 'info');
+  
+  // Simulated fire data (real API would return CSV/JSON)
+  const simulatedFires = [
+    { latitude: -33.8, longitude: 151.2, brightness: 335.4, confidence: 95, acq_date: '2026-02-17' },
+    { latitude: 34.0, longitude: -118.2, brightness: 328.1, confidence: 88, acq_date: '2026-02-17' },
+    { latitude: -15.8, longitude: -47.9, brightness: 342.7, confidence: 92, acq_date: '2026-02-17' }
+  ];
+  
+  STATE.fires = simulatedFires;
+  document.getElementById('fire-detected').textContent = simulatedFires.length;
+  document.getElementById('fire-status').textContent = 'ACTIVE';
+  document.getElementById('fire-meter').style.width = '75%';
+  
+  const list = document.getElementById('fire-list');
+  list.innerHTML = simulatedFires.map(f => `
+    <div class="data-item fire">
+      <div class="item-title">🔥 FIRE DETECTED</div>
+      <div class="item-meta">LAT ${f.latitude.toFixed(2)} LON ${f.longitude.toFixed(2)}</div>
+      <div class="item-meta">BRIGHTNESS ${f.brightness}K | CONF ${f.confidence}%</div>
+    </div>
+  `).join('');
+  
+  addLog(`${simulatedFires.length} ACTIVE FIRES DETECTED`, 'fire');
+}
+
+async function fetchUSFires() {
+  addLog('QUERYING US/CANADA FIRE DATA...', 'fire');
+  addLog('REGION: NORTH AMERICA — FIRMS US/CANADA', 'info');
+  addLog('⚠ Requires FIRMS MAP_KEY for live data', 'warn');
+}
+
+async function fetchAustraliaFires() {
+  addLog('QUERYING AUSTRALIA/NZ FIRE DATA...', 'fire');
+  addLog('REGION: OCEANIA — VIIRS NOAA-20/21', 'info');
+}
+
+// NASA ICE API
+async function fetchIceData() {
+  addLog('QUERYING ICE VELOCITY — ITS_LIVE PROJECT...', 'ice');
+  document.getElementById('ice-status').textContent = 'QUERYING';
+  
+  try {
+    // Query NASA CMR for ITS_LIVE collections
+    const url = 'https://cmr.earthdata.nasa.gov/search/collections.json?keyword=ITS_LIVE&page_size=5';
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${NASA_TOKEN}` }
+    });
+    
+    const data = await response.json();
+    const collections = data.feed.entry;
+    
+    STATE.iceData = collections;
+    document.getElementById('ice-status').textContent = 'TRACKING';
+    
+    const list = document.getElementById('ice-list');
+    list.innerHTML = collections.slice(0,3).map(c => `
+      <div class="data-item ice">
+        <div class="item-title">❄ ${c.title.substring(0,40)}...</div>
+        <div class="item-meta">${c.data_center || 'NSIDC'}</div>
+      </div>
+    `).join('');
+    
+    addLog(`ITS_LIVE: ${collections.length} ICE VELOCITY DATASETS`, 'ice');
+  } catch (error) {
+    addLog(`ICE QUERY ERROR: ${error.message}`, 'warn');
+  }
+}
+
+async function fetchGreenlandData() {
+  addLog('GREENLAND ICE MAPPING PROJECT — GIMP...', 'ice');
+  addLog('TRACKING: JAKOBSHAVN, PETERMANN, HELHEIM GLACIERS', 'info');
+  addLog('DATA SOURCE: RADARSAT-2, TerraSAR-X, ALOS', 'data');
+}
+
+async function fetchAntarcticaData() {
+  addLog('ANTARCTICA ICE SHEETS — ICESat-2 ALTIMETRY...', 'ice');
+  addLog('MONITORING: PINE ISLAND, THWAITES, ROSS ICE SHELF', 'info');
+  addLog('PRECISION: ±4mm ANNUAL HEIGHT CHANGE', 'data');
+}
+
+// NASA CMR
+async function fetchNASACollections() {
+  addLog('NASA CMR: QUERYING CLOUD-HOSTED COLLECTIONS...', 'nasa');
+  document.getElementById('cmr-status').textContent = 'QUERY';
+  
+  try {
+    const url = 'https://cmr.earthdata.nasa.gov/search/collections.json?cloud_hosted=true&has_granules=true&page_size=8';
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${NASA_TOKEN}` }
+    });
+    
+    const data = await response.json();
+    const collections = data.feed.entry;
+    
+    STATE.nasaCollections = collections;
+    document.getElementById('cmr-status').textContent = 'ONLINE';
+    
+    const list = document.getElementById('nasa-list');
+    list.innerHTML = collections.map(c => `
+      <div class="data-item">
+        <div class="item-title">${c.title.substring(0,45)}...</div>
+        <div class="item-meta">${c.data_center || 'NASA EOSDIS'}</div>
+      </div>
+    `).join('');
+    
+    addLog(`CMR: ${collections.length} COLLECTIONS RETRIEVED`, 'nasa');
+  } catch (error) {
+    addLog(`CMR ERROR: ${error.message}`, 'warn');
+  }
+}
+
+// MOUSE/KEYBOARD
+mainCanvas.addEventListener('mousedown', e => {
+  STATE.isDragging = true;
+  STATE.lastMouse = { x: e.clientX, y: e.clientY };
+});
+document.addEventListener('mousemove', e => {
+  if (!STATE.isDragging) return;
+  const dx = e.clientX - STATE.lastMouse.x;
+  const dy = e.clientY - STATE.lastMouse.y;
+  STATE.viewAngleY += dx * 0.003;
+  STATE.viewAngleX += dy * 0.003;
+  STATE.lastMouse = { x: e.clientX, y: e.clientY };
+});
+document.addEventListener('mouseup', () => STATE.isDragging = false);
+
+mainCanvas.addEventListener('wheel', e => {
+  STATE.fov = Math.max(0.1, Math.min(90, STATE.fov * (e.deltaY > 0 ? 1.1 : 0.9)));
+  e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('keydown', e => {
+  switch(e.key) {
+    case 'ArrowUp': case 'w': thrust(0, 0, -1); break;
+    case 'ArrowDown': case 's': thrust(0, 0, 1); break;
+    case 'ArrowLeft': case 'a': thrust(-1, 0, 0); break;
+    case 'ArrowRight': case 'd': thrust(1, 0, 0); break;
+    case ' ': fullStop(); e.preventDefault(); break;
+  }
+});
+
+document.getElementById('thrust-power').addEventListener('input', e => {
+  STATE.thrustPower = parseFloat(e.target.value);
+});
+document.getElementById('warp-factor').addEventListener('input', e => {
+  STATE.warpFactor = parseFloat(e.target.value);
+});
+document.getElementById('redshift-range').addEventListener('input', e => {
+  STATE.redshift = parseInt(e.target.value);
+});
+
+// LOG
+const logs = [];
+function addLog(msg, type = 'info') {
+  const t = new Date().toISOString().slice(11,19);
+  logs.unshift({ t, msg, type });
+  if (logs.length > 60) logs.pop();
+  
+  const el = document.getElementById('log-console');
+  el.innerHTML = logs.slice(0, 14).map(l =>
+    `<div class="log-line"><span class="log-time">${l.t}</span><span class="log-${l.type}">${l.msg}</span></div>`
+  ).join('');
+}
+
+// MAIN LOOP
+function loop() {
+  renderStarfield();
+  if (STATE.mode === 'space') renderSpace();
+  else renderOcean();
+  renderWaveform();
+  renderSpectrum();
+  updatePhysics();
+  updateUI();
+  requestAnimationFrame(loop);
+}
+
+// INIT
+window.addEventListener('resize', () => { initStars(); resizeCanvases(); });
+initStars();
+resizeCanvases();
+
+addLog('PRIMORDIAL COMMAND CENTER v3.0 ULTIMATE', 'data');
+addLog('NASA EARTHDATA: AUTHENTICATED', 'nasa');
+addLog('MODIS/VIIRS FIRE TRACKING: READY', 'fire');
+addLog('ICESat-2 / ITS_LIVE ICE MONITOR: ACTIVE', 'ice');
+addLog('CMR API: ONLINE — 32,000+ COLLECTIONS', 'nasa');
+addLog('SYSTEM NOMINAL — AWAITING COMMANDS', 'info');
+
+loop();
+
+// Auto-fetch on startup
+setTimeout(() => {
+  fetchNASACollections();
+  fetchIceData();
+}, 2000);
+</script>
+</body>
+</html>
