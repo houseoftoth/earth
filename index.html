@@ -6,7 +6,6 @@
 <title>PRIMORDIAL COMMAND CENTER v3.0 ULTIMATE</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
-
   :root {
     --void: #00000a;
     --panel: rgba(0,20,60,0.9);
@@ -22,9 +21,7 @@
     --glow-cyan: 0 0 10px #00f5ff;
     --glow-fire: 0 0 15px #ff3355, 0 0 30px rgba(255,51,85,0.4);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     background: var(--void);
     color: var(--neon-cyan);
@@ -33,11 +30,7 @@
     width: 100vw; height: 100vh;
     user-select: none;
   }
-
-  #starfield {
-    position: fixed; inset: 0; z-index: 0;
-  }
-
+  #starfield { position: fixed; inset: 0; z-index: 0; }
   #app {
     position: relative; z-index: 1;
     display: grid;
@@ -46,7 +39,6 @@
     width: 100vw; height: 100vh;
     gap: 2px;
   }
-
   #header {
     grid-column: 1 / -1;
     display: flex; align-items: center; justify-content: space-between;
@@ -54,7 +46,6 @@
     background: rgba(0,10,40,0.95);
     border-bottom: 1px solid rgba(0,245,255,0.3);
   }
-
   #header h1 {
     font-family: 'Orbitron', monospace;
     font-size: 15px; font-weight: 900;
@@ -62,12 +53,10 @@
     color: var(--neon-cyan);
     text-shadow: var(--glow-cyan);
   }
-
   .header-status {
     display: flex; gap: 25px; align-items: center;
     font-size: 10px; color: var(--text-mid);
   }
-
   .status-dot {
     width: 7px; height: 7px; border-radius: 50%;
     display: inline-block; margin-right: 6px;
@@ -75,24 +64,20 @@
   }
   .dot-live { background: var(--neon-green); box-shadow: 0 0 10px #00ff88; }
   .dot-fire { background: var(--neon-red); box-shadow: var(--glow-fire); animation-delay: 0.3s; }
-  .dot-ice { background: var(--neon-cyan); box-shadow: var(--glow-cyan); animation-delay: 0.6s; }
+  .dot-ice  { background: var(--neon-cyan); box-shadow: var(--glow-cyan); animation-delay: 0.6s; }
   .dot-nasa { background: var(--neon-blue); animation-delay: 0.9s; }
-
   @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.9); }
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:0.4; transform:scale(0.9); }
   }
-
-  .mode-toggle {
-    display: flex; gap: 3px;
-  }
+  .mode-toggle { display: flex; gap: 3px; }
   .mode-btn {
     padding: 5px 14px; font-family: 'Orbitron', monospace;
     font-size: 9px; font-weight: 700; letter-spacing: 2px;
     border: 1px solid currentColor; background: transparent;
     cursor: pointer; transition: all 0.2s;
   }
-  .mode-btn.space { color: var(--neon-blue); }
+  .mode-btn.earth { color: var(--neon-blue); }
   .mode-btn.ocean { color: var(--neon-ocean); }
   .mode-btn.active { background: rgba(0,136,255,0.25); box-shadow: var(--glow-cyan); }
 
@@ -103,49 +88,39 @@
     display: flex; flex-direction: column; gap: 10px;
   }
   #panel-left { border-right: 1px solid rgba(0,245,255,0.15); }
-  #panel-right { border-left: 1px solid rgba(0,245,255,0.15); }
+  #panel-right { border-left:  1px solid rgba(0,245,255,0.15); }
 
-  #viewport {
-    position: relative;
-    background: var(--void);
-    overflow: hidden;
-  }
-
-  #main-canvas {
-    width: 100%; height: 100%;
-    display: block;
-  }
+  #viewport { position: relative; background: var(--void); overflow: hidden; }
+  #main-canvas { width: 100%; height: 100%; display: block; }
 
   #crosshair {
     position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%,-50%);
     width: 40px; height: 40px;
     pointer-events: none;
   }
   #crosshair::before, #crosshair::after {
-    content: '';position:absolute;background:rgba(0,245,255,0.5);
+    content:''; position:absolute; background:rgba(0,245,255,0.5);
   }
-  #crosshair::before { width:1px;height:100%;left:50%;top:0; }
-  #crosshair::after { width:100%;height:1px;top:50%;left:0; }
-
+  #crosshair::before { width:1px; height:100%; left:50%; top:0; }
+  #crosshair::after  { width:100%; height:1px; top:50%; left:0; }
   .crosshair-ring {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    border-radius: 50%; border: 1px solid rgba(0,245,255,0.3);
-    animation: ringpulse 3s infinite;
-    pointer-events: none;
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    border-radius:50%; border:1px solid rgba(0,245,255,0.3);
+    animation:ringpulse 3s infinite; pointer-events:none;
   }
   @keyframes ringpulse {
     0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3}
-    50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.05}
+    50%     {transform:translate(-50%,-50%) scale(1.3);opacity:0.05}
   }
 
   #coords-hud, #velocity-hud {
-    position: absolute; font-size: 9px; color: var(--text-mid); line-height: 2;
-    pointer-events: none;
+    position:absolute; font-size:9px; color:var(--text-mid); line-height:2;
+    pointer-events:none;
   }
-  #coords-hud { bottom: 15px; left: 15px; }
-  #velocity-hud { top: 15px; right: 15px; text-align: right; }
+  #coords-hud   { bottom:15px; left:15px; }
+  #velocity-hud { top:15px; right:15px; text-align:right; }
 
   #bottom-controls {
     grid-column: 1 / -1;
@@ -163,7 +138,6 @@
     padding: 10px;
     background: rgba(0,10,30,0.4);
   }
-
   .section-title {
     font-family: 'Orbitron', monospace;
     font-size: 9px; font-weight: 700; letter-spacing: 3px;
@@ -172,43 +146,37 @@
     padding-bottom: 5px;
     display: flex; justify-content: space-between; align-items: center;
   }
-
   .data-row {
     display: flex; justify-content: space-between;
     font-size: 9px; margin-bottom: 4px; color: var(--text-mid);
   }
   .data-label { opacity: 0.7; }
-  .data-val { color: var(--neon-cyan); font-weight: bold; }
-  .data-val.green { color: var(--neon-green); }
-  .data-val.amber { color: var(--neon-amber); }
-  .data-val.red { color: var(--neon-red); }
-  .data-val.fire { color: var(--neon-red); text-shadow: var(--glow-fire); }
-  .data-val.ice { color: var(--neon-cyan); }
-  .data-val.nasa { color: var(--neon-blue); }
+  .data-val        { color: var(--neon-cyan);   font-weight: bold; }
+  .data-val.green  { color: var(--neon-green);  }
+  .data-val.amber  { color: var(--neon-amber);  }
+  .data-val.red    { color: var(--neon-red);    }
+  .data-val.fire   { color: var(--neon-red);    text-shadow: var(--glow-fire); }
+  .data-val.ice    { color: var(--neon-cyan);   }
+  .data-val.nasa   { color: var(--neon-blue);   }
 
   .meter-bar {
     height: 5px; background: rgba(255,255,255,0.04);
     margin: 4px 0 8px; position: relative; border-radius: 2px;
   }
-  .meter-fill {
-    height: 100%; transition: width 0.5s ease; border-radius: 2px;
-  }
-  .meter-cyan .meter-fill { background: var(--neon-cyan); box-shadow: var(--glow-cyan); }
-  .meter-fire .meter-fill { background: var(--neon-red); box-shadow: var(--glow-fire); }
+  .meter-fill { height:100%; transition:width 0.5s ease; border-radius:2px; }
+  .meter-cyan .meter-fill { background:var(--neon-cyan); box-shadow:var(--glow-cyan); }
+  .meter-fire .meter-fill { background:var(--neon-red);  box-shadow:var(--glow-fire); }
 
-  .ctrl-label {
-    font-size: 9px; color: var(--text-dim); margin-bottom: 4px; display: block;
-  }
-
+  .ctrl-label { font-size:9px; color:var(--text-dim); margin-bottom:4px; display:block; }
   input[type=range] {
-    width: 100%; height: 5px; margin: 5px 0 10px;
-    -webkit-appearance: none; background: rgba(0,245,255,0.08);
-    border-radius: 3px; outline: none; cursor: pointer;
+    width:100%; height:5px; margin:5px 0 10px;
+    -webkit-appearance:none; background:rgba(0,245,255,0.08);
+    border-radius:3px; outline:none; cursor:pointer;
   }
   input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 14px; height: 14px;
-    border-radius: 50%; background: var(--neon-cyan);
-    box-shadow: var(--glow-cyan);
+    -webkit-appearance:none; width:14px; height:14px;
+    border-radius:50%; background:var(--neon-cyan);
+    box-shadow:var(--glow-cyan);
   }
 
   #propulsion-grid {
@@ -217,101 +185,89 @@
     justify-content: center;
   }
   .thrust-btn {
-    border: 1px solid rgba(0,245,255,0.3);
-    background: rgba(0,30,80,0.6);
-    color: var(--neon-cyan); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; transition: all 0.15s;
-    border-radius: 3px;
+    border:1px solid rgba(0,245,255,0.3);
+    background:rgba(0,30,80,0.6);
+    color:var(--neon-cyan); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px; transition:all 0.15s; border-radius:3px;
   }
-  .thrust-btn:hover { background: rgba(0,136,255,0.3); box-shadow: var(--glow-cyan); transform: scale(1.05); }
-  .thrust-btn:active { transform: scale(0.95); }
-  .thrust-btn.center { font-size: 9px; font-family: 'Orbitron', monospace; }
+  .thrust-btn:hover  { background:rgba(0,136,255,0.3); box-shadow:var(--glow-cyan); transform:scale(1.05); }
+  .thrust-btn:active { transform:scale(0.95); }
+  .thrust-btn.center { font-size:9px; font-family:'Orbitron',monospace; }
 
   #log-console {
-    font-size: 8px; line-height: 1.9; max-height: 110px;
-    overflow-y: auto; color: var(--text-mid);
+    font-size:8px; line-height:1.9; max-height:110px;
+    overflow-y:auto; color:var(--text-mid);
   }
-  .log-line { border-bottom: 1px solid rgba(0,245,255,0.02); padding: 2px 0; }
-  .log-time { color: var(--text-dim); margin-right: 8px; }
-  .log-info { color: var(--neon-cyan); }
-  .log-warn { color: var(--neon-amber); }
-  .log-data { color: var(--neon-green); }
-  .log-fire { color: var(--neon-red); }
-  .log-ice { color: var(--neon-cyan); }
-  .log-nasa { color: var(--neon-blue); }
+  .log-line   { border-bottom:1px solid rgba(0,245,255,0.02); padding:2px 0; }
+  .log-time   { color:var(--text-dim); margin-right:8px; }
+  .log-info   { color:var(--neon-cyan);   }
+  .log-warn   { color:var(--neon-amber);  }
+  .log-data   { color:var(--neon-green);  }
+  .log-fire   { color:var(--neon-red);    }
+  .log-ice    { color:var(--neon-cyan);   }
+  .log-nasa   { color:var(--neon-blue);   }
+  .log-error  { color:var(--neon-red); text-shadow:var(--glow-fire); }
 
-  #waveform-canvas, #spectrum-canvas { width: 100%; display: block; }
-  #waveform-canvas { height: 45px; }
-  #spectrum-canvas { height: 35px; }
+  #waveform-canvas, #spectrum-canvas { width:100%; display:block; }
+  #waveform-canvas { height:45px; }
+  #spectrum-canvas { height:35px; }
 
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.2); border-radius: 2px; }
+  ::-webkit-scrollbar       { width:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(0,245,255,0.2); border-radius:2px; }
 
   #scanlines {
-    position: fixed; inset: 0; z-index: 100; pointer-events: none;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    position:fixed; inset:0; z-index:100; pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
   }
-
   .live-badge {
-    font-size: 9px; padding: 3px 8px;
-    border: 1px solid var(--neon-red);
-    color: var(--neon-red); animation: pulse 1.5s infinite;
-    font-family: 'Orbitron', monospace; letter-spacing: 2px;
-    border-radius: 2px;
+    font-size:9px; padding:3px 8px;
+    border:1px solid var(--neon-red);
+    color:var(--neon-red); animation:pulse 1.5s infinite;
+    font-family:'Orbitron',monospace; letter-spacing:2px; border-radius:2px;
   }
-
-  .bottom-section { display: flex; flex-direction: column; gap: 8px; }
+  .bottom-section { display:flex; flex-direction:column; gap:8px; }
   .bottom-label {
-    font-family: 'Orbitron', monospace; font-size: 9px;
-    letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+    font-family:'Orbitron',monospace; font-size:9px;
+    letter-spacing:2px; color:var(--text-dim); text-transform:uppercase;
   }
-
   .btn-small {
-    padding: 5px 10px; font-family: 'Orbitron', monospace;
-    font-size: 8px; letter-spacing: 1.5px; font-weight: 700;
-    border: 1px solid currentColor; background: rgba(0,20,60,0.3);
-    cursor: pointer; transition: all 0.2s; width: 100%; margin-bottom: 4px;
-    border-radius: 2px;
+    padding:5px 10px; font-family:'Orbitron',monospace;
+    font-size:8px; letter-spacing:1.5px; font-weight:700;
+    border:1px solid currentColor; background:rgba(0,20,60,0.3);
+    cursor:pointer; transition:all 0.2s; width:100%; margin-bottom:4px;
+    border-radius:2px;
   }
-  .btn-cyan { color: var(--neon-cyan); }
-  .btn-cyan:hover { background: rgba(0,245,255,0.2); box-shadow: var(--glow-cyan); }
-  .btn-fire { color: var(--neon-red); }
-  .btn-fire:hover { background: rgba(255,51,85,0.15); box-shadow: var(--glow-fire); }
-  .btn-ice { color: var(--neon-cyan); }
-  .btn-ice:hover { background: rgba(0,245,255,0.15); box-shadow: var(--glow-cyan); }
-  .btn-nasa { color: var(--neon-blue); }
-  .btn-nasa:hover { background: rgba(0,136,255,0.2); }
+  .btn-cyan:hover  { background:rgba(0,245,255,0.2);  box-shadow:var(--glow-cyan); }
+  .btn-fire { color:var(--neon-red); }
+  .btn-fire:hover  { background:rgba(255,51,85,0.15);  box-shadow:var(--glow-fire); }
+  .btn-ice  { color:var(--neon-cyan); }
+  .btn-ice:hover   { background:rgba(0,245,255,0.15);  box-shadow:var(--glow-cyan); }
+  .btn-nasa { color:var(--neon-blue); }
+  .btn-nasa:hover  { background:rgba(0,136,255,0.2); }
 
   .data-list {
-    font-size: 8px; max-height: 180px; overflow-y: auto;
-    border-top: 1px solid rgba(0,245,255,0.05);
-    padding-top: 6px; margin-top: 6px;
+    font-size:8px; max-height:180px; overflow-y:auto;
+    border-top:1px solid rgba(0,245,255,0.05);
+    padding-top:6px; margin-top:6px;
   }
   .data-item {
-    padding: 5px 7px; margin-bottom: 3px;
-    background: rgba(0,20,50,0.4);
-    border-left: 2px solid var(--neon-cyan);
-    cursor: pointer;
-    transition: all 0.2s;
+    padding:5px 7px; margin-bottom:3px;
+    background:rgba(0,20,50,0.4);
+    border-left:2px solid var(--neon-cyan);
+    cursor:pointer; transition:all 0.2s;
   }
-  .data-item:hover {
-    background: rgba(0,40,100,0.5);
-    border-left-color: var(--neon-green);
-  }
-  .data-item.fire { border-left-color: var(--neon-red); }
-  .data-item.ice { border-left-color: var(--neon-cyan); }
-  .item-title { font-weight: bold; margin-bottom: 2px; }
-  .item-meta { opacity: 0.6; font-size: 7px; }
-
+  .data-item:hover { background:rgba(0,40,100,0.5); border-left-color:var(--neon-green); }
+  .data-item.fire  { border-left-color:var(--neon-red);  }
+  .data-item.ice   { border-left-color:var(--neon-cyan); }
+  .item-title { font-weight:bold; margin-bottom:2px; }
+  .item-meta  { opacity:0.6; font-size:7px; }
 </style>
 </head>
 <body>
-
 <canvas id="starfield"></canvas>
 <div id="scanlines"></div>
-
 <div id="app">
   <header id="header">
     <h1>⬡ PRIMORDIAL COMMAND CENTER v3.0</h1>
@@ -324,17 +280,14 @@
       <div class="live-badge">● REC</div>
     </div>
     <div class="mode-toggle">
-      <button class="mode-btn space active" onclick="setMode('space')">SPACE</button>
+      <button class="mode-btn earth active" onclick="setMode('earth')">EARTH</button>
       <button class="mode-btn ocean" onclick="setMode('ocean')">OCEAN</button>
     </div>
   </header>
 
   <div id="panel-left">
-
     <div class="panel-section">
-      <div class="section-title">
-        <span>◈ NAVIGATION</span>
-      </div>
+      <div class="section-title"><span>◈ NAVIGATION</span></div>
       <div class="data-row"><span class="data-label">POSITION X</span><span class="data-val" id="pos-x">0.000 AU</span></div>
       <div class="data-row"><span class="data-label">POSITION Y</span><span class="data-val" id="pos-y">0.000 AU</span></div>
       <div class="data-row"><span class="data-label">POSITION Z</span><span class="data-val" id="pos-z">0.000 AU</span></div>
@@ -346,21 +299,18 @@
       <label class="ctrl-label">WARP FACTOR</label>
       <input type="range" id="warp-factor" min="1" max="10" value="1" step="0.1">
     </div>
-
     <div class="panel-section">
       <div class="section-title"><span>◈ ENVIRONMENT</span></div>
       <div class="data-row"><span class="data-label">TEMP</span><span class="data-val" id="env-temp">2.7 K</span></div>
       <div class="data-row"><span class="data-label">RADIATION</span><span class="data-val red" id="env-rad">0.1 Sv/h</span></div>
       <div class="meter-bar meter-cyan"><div class="meter-fill" id="rad-meter" style="width:10%"></div></div>
     </div>
-
     <div class="panel-section">
       <div class="section-title"><span>◈ ACOUSTIC SPECTRUM</span></div>
       <canvas id="spectrum-canvas"></canvas>
       <div class="data-row" style="margin-top:6px"><span class="data-label">SOFAR CH</span><span class="data-val" id="sofar-depth">1000m</span></div>
       <div class="data-row"><span class="data-label">SOUND SPD</span><span class="data-val" id="sound-speed">1500 m/s</span></div>
     </div>
-
   </div>
 
   <div id="viewport">
@@ -371,9 +321,9 @@
       <div class="crosshair-ring" style="width:110px;height:110px;animation-delay:2s"></div>
     </div>
     <div id="coords-hud">
-      <div>RA: <span id="hud-ra">00h00m00s</span></div>
-      <div>DEC: <span id="hud-dec">+00°00'</span></div>
-      <div>FOV: <span id="hud-fov">1.0°</span></div>
+      <div>LAT: <span id="hud-lat">0.00°</span></div>
+      <div>LON: <span id="hud-lon">0.00°</span></div>
+      <div>FOV: <span id="hud-fov">60.0°</span></div>
     </div>
     <div id="velocity-hud">
       <div>V: <span id="hud-vel">0.00</span> km/s</div>
@@ -383,7 +333,6 @@
   </div>
 
   <div id="panel-right">
-
     <div class="panel-section">
       <div class="section-title">
         <span>◈ LIVE FIRE TRACKING</span>
@@ -398,7 +347,6 @@
       <button class="btn-small btn-fire" onclick="fetchAustraliaFires()">🌏 AUSTRALIA FIRES</button>
       <div id="fire-list" class="data-list"></div>
     </div>
-
     <div class="panel-section">
       <div class="section-title">
         <span>◈ ICE SHEET MONITOR</span>
@@ -413,7 +361,6 @@
       <button class="btn-small btn-ice" onclick="fetchAntarcticaData()">🧊 ANTARCTICA SHEETS</button>
       <div id="ice-list" class="data-list"></div>
     </div>
-
     <div class="panel-section">
       <div class="section-title"><span>◈ NASA COLLECTIONS</span></div>
       <div class="data-row"><span class="data-label">TOKEN</span><span class="data-val nasa">AUTH</span></div>
@@ -421,7 +368,6 @@
       <button class="btn-small btn-nasa" onclick="fetchNASACollections()">⟳ QUERY CMR</button>
       <div id="nasa-list" class="data-list"></div>
     </div>
-
     <div class="panel-section">
       <div class="section-title"><span>◈ PRIMORDIAL ACOUSTICS</span></div>
       <canvas id="waveform-canvas"></canvas>
@@ -430,11 +376,9 @@
       <label class="ctrl-label" style="margin-top:6px">REDSHIFT PROBE</label>
       <input type="range" id="redshift-range" min="0" max="1100" value="1100" step="10">
     </div>
-
   </div>
 
   <div id="bottom-controls">
-
     <div class="bottom-section">
       <div class="bottom-label">PROPULSION CONTROL</div>
       <div style="display:flex;gap:18px;align-items:center">
@@ -456,7 +400,6 @@
         </div>
       </div>
     </div>
-
     <div class="bottom-section" style="align-items:center">
       <div class="bottom-label" style="text-align:center">SYSTEM STATUS</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;font-size:9px;margin-top:5px">
@@ -466,54 +409,59 @@
         <div class="data-row"><span>NASA API</span><span class="data-val nasa">LIVE</span></div>
       </div>
     </div>
-
     <div class="bottom-section">
       <div class="bottom-label">MISSION LOG</div>
       <div id="log-console"></div>
     </div>
-
   </div>
 </div>
 
 <script>
-// NASA TOKEN
-const NASA_TOKEN = 'eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImV2aWVrcmFuamFrIiwiZXhwIjoxNzc2NTQwMTg5LCJpYXQiOjE3NzEzNTYxODksImlzcyI6Imh0dHBzOi8vdXJzLmVhcnRoZGF0YS5uYXNhLmdvdiIsImlkZW50aXR5X3Byb3ZpZGVyIjoiZWRsX29wcyIsImFjciI6ImVkbCIsImFzc3VyYW5jZV9sZXZlbCI6M30.GLVRw2bmm5z5LW6sGtqLrXPmDHeCBzdVvsYnKRdHWq5ggM6llkpwkeS3rfu5Yn9TiY3A4CnYFcSRPXemlCwoykFsZppzTsa3efrSPHpLBfTuVisI06TbWS45tFrzGhfYAd9mznwM_FzHu9jpUBsqovmS3eUMsy1xe6-jo5bokwDak1fYFEXydeBNJA6HogFOObd9JDVoLtDk10543Ry_vV4QIby71yQg9ztF8DWhUrn1vsB3bgoQMJdwHfebjsnZgh36VYJHvkEHGVWCPLcWDw622_59xEbXePC6e6fF_1-xWGo1mU-9oD6QCpvDj2W4KAfWg6t1bz_ur1Iyu9H1pg';
+// ============================================================
+// CREDENTIALS
+// ============================================================
+const NASA_TOKEN   = 'eyJ0eXAiOiJKV1QiLCJvcmlnaW4iOiJFYXJ0aGRhdGEgTG9naW4iLCJzaWciOiJlZGxqd3RwdWJrZXlfb3BzIiwiYWxnIjoiUlMyNTYifQ.eyJ0eXBlIjoiVXNlciIsInVpZCI6ImV2aWVrcmFuamFrIiwiZXhwIjoxNzc2NTQwMTg5LCJpYXQiOjE3NzEzNTYxODksImlzcyI6Imh0dHBzOi8vdXJzLmVhcnRoZGF0YS5uYXNhLmdvdiIsImlkZW50aXR5X3Byb3ZpZGVyIjoiZWRsX29wcyIsImFjciI6ImVkbCIsImFzc3VyYW5jZV9sZXZlbCI6M30.GLVRw2bmm5z5LW6sGtqLrXPmDHeCBzdVvsYnKRdHWq5ggM6llkpwkeS3rfu5Yn9TiY3A4CnYFcSRPXemlCwoykFsZppzTsa3efrSPHpLBfTuVisI06TbWS45tFrzGhfYAd9mznwM_FzHu9jpUBsqovmS3eUMsy1xe6-jo5bokwDak1fYFEXydeBNJA6HogFOObd9JDVoLtDk10543Ry_vV4QIby71yQg9ztF8DWhUrn1vsB3bgoQMJdwHfebjsnZgh36VYJHvkEHGVWCPLcWDw622_59xEbXePC6e6fF_1-xWGo1mU-9oD6QCpvDj2W4KAfWg6t1bz_ur1Iyu9H1pg';
+const FIRMS_MAP_KEY = '959d58fc854163436b320e6cb686b0c9';
 
+// ============================================================
+// STATE
+// ============================================================
 const STATE = {
-  mode: 'space',
-  pos: { x: 0, y: 0, z: 0 },
-  vel: { x: 0, y: 0, z: 0 },
+  mode: 'earth',
+  // Camera angles for Earth globe rotation (radians)
+  rotX: 0.4,   // tilt (latitude view)
+  rotY: 0,     // spin (longitude view)
+  zoom: 1.0,   // zoom multiplier
+  // Physics (AU / frame)
+  pos: { x:0, y:0, z:0 },
+  vel: { x:0, y:0, z:0 },
   warpFactor: 1,
   thrustPower: 1,
   redshift: 1100,
   tick: 0,
-  fov: 1.0,
-  viewAngleX: 0,
-  viewAngleY: 0,
+  fov: 60,
   oceanDepth: 0,
   isDragging: false,
-  lastMouse: { x: 0, y: 0 },
+  lastMouse: { x:0, y:0 },
   fires: [],
-  iceData: [],
-  nasaCollections: []
+  iceDataNorth: [],
+  iceDataSouth: [],
+  nasaCollections: [],
+  // Environmental sim
+  radLevel: 0.1,
 };
 
-const OBJECTS = {
-  sun:     { name: 'SUN', x: 0, y: 0, z: 0, color: '#ffdd44', size: 20 },
-  earth:   { name: 'EARTH', x: 1.0, y: 0, z: 0, color: '#4488ff', size: 10 },
-  mars:    { name: 'MARS', x: 1.52, y: -0.15, z: 0.03, color: '#ff6633', size: 6 },
-  jupiter: { name: 'JUPITER', x: 5.2, y: 0.3, z: -0.1, color: '#ffaa66', size: 16 },
-};
-
+// ============================================================
 // STARFIELD
+// ============================================================
 const sfCanvas = document.getElementById('starfield');
-const sfCtx = sfCanvas.getContext('2d');
+const sfCtx    = sfCanvas.getContext('2d');
 let stars = [];
 
 function initStars() {
-  sfCanvas.width = window.innerWidth;
+  sfCanvas.width  = window.innerWidth;
   sfCanvas.height = window.innerHeight;
-  stars = Array.from({length: 1000}, () => ({
+  stars = Array.from({length:1000}, () => ({
     x: Math.random() * sfCanvas.width,
     y: Math.random() * sfCanvas.height,
     r: Math.random() * 1.8,
@@ -534,203 +482,372 @@ function renderStarfield() {
   });
 }
 
-// MAIN VIEWPORT
+// ============================================================
+// MAIN CANVAS
+// ============================================================
 const mainCanvas = document.getElementById('main-canvas');
-const ctx = mainCanvas.getContext('2d');
+const ctx        = mainCanvas.getContext('2d');
 
-function resizeCanvases() {
+function resizeMainCanvas() {
   const vp = document.getElementById('viewport');
-  mainCanvas.width = vp.clientWidth;
+  mainCanvas.width  = vp.clientWidth;
   mainCanvas.height = vp.clientHeight;
 }
 
-function renderSpace() {
-  const W = mainCanvas.width, H = mainCanvas.height;
-  ctx.clearRect(0, 0, W, H);
-  
-  const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W/1.5);
-  grad.addColorStop(0, 'rgba(0,15,40,0.9)');
-  grad.addColorStop(1, 'rgba(0,0,10,0.98)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-  
-  // Grid
-  ctx.strokeStyle = 'rgba(0,245,255,0.04)';
-  ctx.lineWidth = 0.5;
-  for (let x = 0; x <= W; x += W/8) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-  }
-  for (let y = 0; y <= H; y += H/8) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
-  
-  // Objects
-  Object.values(OBJECTS).forEach(obj => {
-    const sx = W/2 + obj.x * 50;
-    const sy = H/2 + obj.y * 50;
-    const r = obj.size || 8;
-    
-    // Glow
-    const glowGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 5);
-    glowGrad.addColorStop(0, obj.color + '88');
-    glowGrad.addColorStop(1, 'transparent');
-    ctx.fillStyle = glowGrad;
-    ctx.beginPath();
-    ctx.arc(sx, sy, r * 5, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Body
-    ctx.beginPath();
-    ctx.arc(sx, sy, r, 0, Math.PI * 2);
-    ctx.fillStyle = obj.color;
-    ctx.fill();
-    
-    // Label
-    ctx.fillStyle = 'rgba(0,245,255,0.7)';
-    ctx.font = '9px Share Tech Mono';
-    ctx.fillText(obj.name, sx + r + 6, sy + 4);
-  });
-  
-  // Fire markers
-  STATE.fires.forEach((fire, i) => {
-    const fx = W * (fire.longitude + 180) / 360;
-    const fy = H * (90 - fire.latitude) / 180;
-    
-    ctx.beginPath();
-    ctx.arc(fx, fy, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#ff3355';
-    ctx.fill();
-    
-    const t = Date.now() * 0.001;
-    ctx.strokeStyle = `rgba(255,51,85,${0.5 + 0.5 * Math.sin(t * 3 + i)})`;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(fx, fy, 8 + Math.sin(t * 2 + i) * 3, 0, Math.PI * 2);
-    ctx.stroke();
-  });
+// ============================================================
+// EARTH GLOBE RENDERER  (FIX: full sphere rasterisation)
+// ============================================================
+// Maps a sphere surface point (lat°, lon°) → 2D canvas coords.
+// Uses the current rotX/rotY camera angles.
+function latLonToCanvas(latDeg, lonDeg, cx, cy, R) {
+  // Convert to radians
+  const lat = latDeg * Math.PI / 180;
+  const lon = lonDeg * Math.PI / 180;
+
+  // 3-D unit vector on sphere
+  let x =  Math.cos(lat) * Math.sin(lon);
+  let y = -Math.sin(lat);
+  let z =  Math.cos(lat) * Math.cos(lon);
+
+  // Rotate around Y-axis (lon pan)
+  const cosY = Math.cos(STATE.rotY), sinY = Math.sin(STATE.rotY);
+  const x1 = x * cosY + z * sinY;
+  const z1 = -x * sinY + z * cosY;
+  x = x1; z = z1;
+
+  // Rotate around X-axis (lat tilt)
+  const cosX = Math.cos(STATE.rotX), sinX = Math.sin(STATE.rotX);
+  const y2 = y * cosX - z * sinX;
+  const z2 = y * sinX + z * cosX;
+  y = y2; z = z2;
+
+  // Simple orthographic projection (z > 0 = visible hemisphere)
+  return { sx: cx + x * R, sy: cy + y * R, visible: z >= -0.05 };
 }
 
+// Draw a filled circle for a lat/lon point
+function drawGlowDot(px, py, radius, color, glowColor, glowBlur) {
+  ctx.save();
+  ctx.shadowBlur  = glowBlur;
+  ctx.shadowColor = glowColor;
+  ctx.beginPath();
+  ctx.arc(px, py, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+function renderEarth() {
+  const W = mainCanvas.width, H = mainCanvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const cx = W / 2, cy = H / 2;
+  // R = globe radius — use 40% of the smaller viewport dimension
+  const R = Math.min(W, H) * 0.38 * STATE.zoom;
+
+  // --- Background deep-space gradient
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W,H)*0.7);
+  bg.addColorStop(0, 'rgba(0,15,40,0.92)');
+  bg.addColorStop(1, 'rgba(0,0,10,0.98)');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // --- Subtle grid lines on background
+  ctx.strokeStyle = 'rgba(0,245,255,0.03)';
+  ctx.lineWidth   = 0.5;
+  for (let gx = 0; gx <= W; gx += W/8) { ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+  for (let gy = 0; gy <= H; gy += H/8) { ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
+
+  // --- Globe glow halo
+  const halo = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.25);
+  halo.addColorStop(0, 'rgba(0,100,255,0.12)');
+  halo.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = halo;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 1.25, 0, Math.PI * 2);
+  ctx.fill();
+
+  // --- Globe base (ocean colour) — clip everything to circle
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.clip();
+
+  // Ocean fill
+  const oceanGrad = ctx.createRadialGradient(cx - R*0.3, cy - R*0.3, R*0.05, cx, cy, R);
+  oceanGrad.addColorStop(0, '#2255cc');
+  oceanGrad.addColorStop(0.5, '#1133aa');
+  oceanGrad.addColorStop(1, '#0a1f66');
+  ctx.fillStyle = oceanGrad;
+  ctx.fillRect(cx - R, cy - R, R*2, R*2);
+
+  // --- Latitude / longitude grid lines ON sphere
+  ctx.strokeStyle = 'rgba(0,200,255,0.08)';
+  ctx.lineWidth   = 0.6;
+  // Latitude lines
+  for (let lat = -75; lat <= 75; lat += 15) {
+    ctx.beginPath();
+    let first = true;
+    for (let lon = -180; lon <= 180; lon += 4) {
+      const p = latLonToCanvas(lat, lon, cx, cy, R);
+      if (!p.visible) { first = true; continue; }
+      if (first) { ctx.moveTo(p.sx, p.sy); first = false; }
+      else ctx.lineTo(p.sx, p.sy);
+    }
+    ctx.stroke();
+  }
+  // Longitude lines
+  for (let lon = -180; lon < 180; lon += 30) {
+    ctx.beginPath();
+    let first = true;
+    for (let lat = -90; lat <= 90; lat += 4) {
+      const p = latLonToCanvas(lat, lon, cx, cy, R);
+      if (!p.visible) { first = true; continue; }
+      if (first) { ctx.moveTo(p.sx, p.sy); first = false; }
+      else ctx.lineTo(p.sx, p.sy);
+    }
+    ctx.stroke();
+  }
+
+  // --- Hemisphere shading (directional light from top-left)
+  const shade = ctx.createRadialGradient(cx - R*0.35, cy - R*0.35, R*0.1, cx + R*0.4, cy + R*0.4, R*1.1);
+  shade.addColorStop(0, 'rgba(255,255,255,0.06)');
+  shade.addColorStop(0.5, 'rgba(0,0,0,0)');
+  shade.addColorStop(1, 'rgba(0,0,0,0.55)');
+  ctx.fillStyle = shade;
+  ctx.fillRect(cx - R, cy - R, R*2, R*2);
+
+  ctx.restore(); // end clip
+
+  // --- Polar ice caps (drawn after clip so they sit on sphere edge properly)
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.clip();
+
+  // FIX: correct ice cap rendering using actual extent data or defaults
+  const northExtentFrac = STATE.iceDataNorth.length
+    ? Math.min(1, STATE.iceDataNorth[STATE.iceDataNorth.length-1].extent / 14)
+    : 0.3;
+  const southExtentFrac = STATE.iceDataSouth.length
+    ? Math.min(1, STATE.iceDataSouth[STATE.iceDataSouth.length-1].extent / 18)
+    : 0.2;
+
+  // North cap: render as a lat-band loop of points
+  drawIceCap(cx, cy, R, 90 - northExtentFrac * 35, 90,  1); // top
+  drawIceCap(cx, cy, R, -90, -(90 - southExtentFrac * 35), -1); // bottom
+
+  ctx.restore();
+
+  // --- Globe outline / limb
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(0,180,255,0.45)';
+  ctx.lineWidth   = 1.5;
+  ctx.shadowBlur  = 18;
+  ctx.shadowColor = '#0088ff';
+  ctx.stroke();
+  ctx.shadowBlur  = 0;
+
+  // --- Fire markers on correct globe positions (FIX: use latLonToCanvas)
+  const t = Date.now() * 0.001;
+  STATE.fires.forEach((fire, i) => {
+    if (isNaN(fire.latitude) || isNaN(fire.longitude)) return;
+    const p = latLonToCanvas(fire.latitude, fire.longitude, cx, cy, R);
+    if (!p.visible) return;
+
+    const intensity = Math.min(1, (fire.frp ? fire.frp / 200 : 0) + (fire.bright_ti4 ? (fire.bright_ti4 - 300) / 100 : 0) + 0.3);
+    const baseR = Math.max(2, 2 + intensity * 4);
+    const flicker = 0.7 + 0.3 * Math.sin(t * 4 + i * 1.7);
+
+    // Outer pulsing ring
+    ctx.beginPath();
+    ctx.arc(p.sx, p.sy, baseR * 3.5 * flicker, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,51,85,${0.25 * flicker})`;
+    ctx.lineWidth   = 1;
+    ctx.stroke();
+
+    // Inner glow dot
+    drawGlowDot(
+      p.sx, p.sy,
+      baseR * flicker,
+      `rgba(255,${Math.floor(80 + 100*intensity)},51,0.95)`,
+      '#ff3355', 10
+    );
+  });
+
+  // Update HUD with camera lat/lon from current rotation
+  const viewLat = -STATE.rotX * 180 / Math.PI;
+  const viewLon =  STATE.rotY * 180 / Math.PI;
+  document.getElementById('hud-lat').textContent  = `${viewLat.toFixed(1)}°`;
+  document.getElementById('hud-lon').textContent  = `${viewLon.toFixed(1)}°`;
+  document.getElementById('hud-fov').textContent  = `${STATE.fov.toFixed(1)}°`;
+  document.getElementById('hud-bear').textContent = `${((viewLon % 360 + 360) % 360).toFixed(0).padStart(3,'0')}°`;
+}
+
+// Draw an ice-cap band between two latitudes
+function drawIceCap(cx, cy, R, latFrom, latTo, dir) {
+  const steps = 60;
+  ctx.beginPath();
+  // Build polygon by walking the cap boundary at latFrom and then the pole
+  let first = true;
+  for (let i = 0; i <= steps; i++) {
+    const lon = -180 + (360 * i / steps);
+    const p   = latLonToCanvas(latFrom, lon, cx, cy, R);
+    if (first) { ctx.moveTo(p.sx, p.sy); first = false; }
+    else ctx.lineTo(p.sx, p.sy);
+  }
+  // Close toward the pole
+  const pole = latLonToCanvas(latTo, 0, cx, cy, R);
+  ctx.lineTo(pole.sx, pole.sy);
+  ctx.closePath();
+
+  const iceGrad = ctx.createRadialGradient(cx, dir > 0 ? cy - R*0.85 : cy + R*0.85, 1,
+                                            cx, dir > 0 ? cy - R*0.85 : cy + R*0.85, R*0.35);
+  iceGrad.addColorStop(0, 'rgba(240,250,255,0.95)');
+  iceGrad.addColorStop(0.7, 'rgba(180,230,255,0.75)');
+  iceGrad.addColorStop(1, 'rgba(100,180,255,0.2)');
+  ctx.fillStyle   = iceGrad;
+  ctx.strokeStyle = 'rgba(180,230,255,0.4)';
+  ctx.lineWidth   = 0.8;
+  ctx.fill();
+  ctx.stroke();
+}
+
+// ============================================================
+// OCEAN MODE
+// ============================================================
 function renderOcean() {
   const W = mainCanvas.width, H = mainCanvas.height;
   ctx.clearRect(0, 0, W, H);
   const t = Date.now() * 0.001;
-  
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, '#001520');
-  grad.addColorStop(1, '#002540');
-  ctx.fillStyle = grad;
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#001520');
+  bg.addColorStop(1, '#002540');
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
-  
-  // Bioluminescence
+
+  // Bioluminescence particles
   for (let i = 0; i < 40; i++) {
-    const px = (Math.sin(t * 0.3 + i * 2.5) * 0.5 + 0.5) * W;
-    const py = (Math.sin(t * 0.25 + i * 3.5) * 0.5 + 0.5) * H;
+    const px     = (Math.sin(t * 0.3 + i * 2.5) * 0.5 + 0.5) * W;
+    const py     = (Math.sin(t * 0.25 + i * 3.5) * 0.5 + 0.5) * H;
     const bright = Math.sin(t * 1.8 + i) * 0.5 + 0.5;
     ctx.beginPath();
     ctx.arc(px, py, 3 + bright * 3, 0, Math.PI*2);
     ctx.fillStyle = `rgba(0,255,200,${bright * 0.7})`;
     ctx.fill();
   }
-  
-  // Sound waves
+
+  // SOFAR-channel sound wave ellipses
   for (let i = 0; i < 6; i++) {
-    const phase = ((t * 0.5 + i / 6) % 1);
+    const phase  = ((t * 0.5 + i / 6) % 1);
     const radius = phase * W;
     ctx.beginPath();
     ctx.ellipse(W/2, H/2, radius, radius * 0.25, 0, 0, Math.PI*2);
     ctx.strokeStyle = `rgba(0,255,204,${(1-phase) * 0.4})`;
-    ctx.lineWidth = 1;
+    ctx.lineWidth   = 1;
     ctx.stroke();
   }
 }
 
-// WAVEFORM
+// ============================================================
+// WAVEFORM (Primordial CMB)
+// ============================================================
 const wfCanvas = document.getElementById('waveform-canvas');
-const wfCtx = wfCanvas.getContext('2d');
+const wfCtx    = wfCanvas.getContext('2d');
 
 function renderWaveform() {
-  const W = 250, H = 45;
+  const W = wfCanvas.parentElement.clientWidth || 200, H = 45;
   wfCanvas.width = W; wfCanvas.height = H;
-  wfCtx.clearRect(0,0,W,H);
+  wfCtx.clearRect(0, 0, W, H);
   const t = Date.now() * 0.001;
   const z = STATE.redshift / 1100;
-  
+
   wfCtx.beginPath();
   for (let x = 0; x < W; x++) {
     const phase = (x / W) * Math.PI * 10 * z;
-    const y = H/2 + Math.sin(phase + t * 2.5) * (H/2 - 5) * 0.65;
+    const y     = H/2 + Math.sin(phase + t * 2.5) * (H/2 - 5) * 0.65;
     if (x === 0) wfCtx.moveTo(x, y); else wfCtx.lineTo(x, y);
   }
   wfCtx.strokeStyle = '#cc44ff';
-  wfCtx.lineWidth = 2;
-  wfCtx.shadowBlur = 10;
+  wfCtx.lineWidth   = 2;
+  wfCtx.shadowBlur  = 10;
   wfCtx.shadowColor = '#cc44ff';
   wfCtx.stroke();
-  wfCtx.shadowBlur = 0;
+  wfCtx.shadowBlur  = 0;
 }
 
+// ============================================================
 // SPECTRUM
+// ============================================================
 const spCanvas = document.getElementById('spectrum-canvas');
-const spCtx = spCanvas.getContext('2d');
+const spCtx    = spCanvas.getContext('2d');
 
 function renderSpectrum() {
-  const W = 250, H = 35;
+  const W = spCanvas.parentElement.clientWidth || 200, H = 35;
   spCanvas.width = W; spCanvas.height = H;
-  spCtx.clearRect(0,0,W,H);
+  spCtx.clearRect(0, 0, W, H);
   const t = Date.now() * 0.001;
-  
+
   for (let i = 0; i < 50; i++) {
-    const x = (i / 50) * W;
+    const x  = (i / 50) * W;
     const bw = (W / 50) - 1;
-    const h = (Math.sin(i * 0.7 + t * 2) * 0.5 + 0.5) * H * 0.7;
-    const r = i / 50;
+    const h  = (Math.sin(i * 0.7 + t * 2) * 0.5 + 0.5) * H * 0.7;
+    const r  = i / 50;
     spCtx.fillStyle = `rgba(0,${Math.floor(255*(1-r*0.5))},${Math.floor(255*(1-r))},0.8)`;
     spCtx.fillRect(x, H - h, bw, h);
   }
 }
 
-// PHYSICS
+// ============================================================
+// PHYSICS & UI UPDATE
+// ============================================================
 function updatePhysics() {
-  STATE.vel.x *= 0.98;
-  STATE.vel.y *= 0.98;
-  STATE.vel.z *= 0.98;
-  
+  STATE.vel.x *= 0.98; STATE.vel.y *= 0.98; STATE.vel.z *= 0.98;
   STATE.pos.x += STATE.vel.x * 0.01;
   STATE.pos.y += STATE.vel.y * 0.01;
   STATE.pos.z += STATE.vel.z * 0.01;
-  
   if (STATE.mode === 'ocean') STATE.oceanDepth = STATE.pos.y;
+
+  // Slowly auto-rotate globe
+  STATE.rotY += 0.0008;
+
+  // Dynamic radiation based on velocity
+  const velMag = Math.sqrt(STATE.vel.x**2 + STATE.vel.y**2 + STATE.vel.z**2);
+  STATE.radLevel = 0.1 + velMag * 0.05;
 }
 
-// UI UPDATE
 function updateUI() {
-  const utc = new Date().toUTCString().slice(-12,-4);
+  const utc = new Date().toUTCString().slice(-12, -4);
   document.getElementById('live-time').textContent = utc + ' UTC';
-  
+
   const velMag = Math.sqrt(STATE.vel.x**2 + STATE.vel.y**2 + STATE.vel.z**2);
-  
-  document.getElementById('pos-x').textContent = `${STATE.pos.x.toFixed(3)} AU`;
-  document.getElementById('pos-y').textContent = `${STATE.pos.y.toFixed(3)} AU`;
-  document.getElementById('pos-z').textContent = `${STATE.pos.z.toFixed(3)} AU`;
+  document.getElementById('pos-x').textContent    = `${STATE.pos.x.toFixed(3)} AU`;
+  document.getElementById('pos-y').textContent    = `${STATE.pos.y.toFixed(3)} AU`;
+  document.getElementById('pos-z').textContent    = `${STATE.pos.z.toFixed(3)} AU`;
   document.getElementById('vel-total').textContent = `${velMag.toFixed(3)} km/s`;
-  document.getElementById('pct-c').textContent = `${(velMag / 299792.458 * 100).toFixed(5)}%`;
-  
-  document.getElementById('hud-vel').textContent = velMag.toFixed(2);
-  document.getElementById('hud-fov').textContent = `${STATE.fov.toFixed(1)}°`;
+  document.getElementById('pct-c').textContent    = `${(velMag / 299792.458 * 100).toFixed(5)}%`;
+  document.getElementById('hud-vel').textContent  = velMag.toFixed(2);
   document.getElementById('hud-throttle').textContent = `${STATE.thrustPower.toFixed(0)}%`;
-  
-  document.getElementById('fire-count').textContent = STATE.fires.length;
-  
-  const depth = Math.abs(STATE.oceanDepth);
+  document.getElementById('fire-count').textContent   = STATE.fires.length;
+
+  // Radiation meter
+  const radPct = Math.min(100, STATE.radLevel * 20);
+  document.getElementById('env-rad').textContent     = `${STATE.radLevel.toFixed(2)} Sv/h`;
+  document.getElementById('rad-meter').style.width   = `${radPct}%`;
+
+  // Sound speed from ocean depth
+  const depth = Math.abs(STATE.oceanDepth * 1000);
   const soundSpeed = 1449.2 + 4.6 * 4 + 0.016 * depth;
   document.getElementById('sound-speed').textContent = `${soundSpeed.toFixed(0)} m/s`;
-  
+
   document.getElementById('redshift-val').textContent = `z=${STATE.redshift}`;
-  
   STATE.tick++;
 }
 
-// CONTROLS
+// ============================================================
+// PROPULSION CONTROLS
+// ============================================================
 function thrust(dx, dy, dz) {
   const p = STATE.thrustPower * STATE.warpFactor;
   STATE.vel.x += dx * p * 0.5;
@@ -738,17 +855,14 @@ function thrust(dx, dy, dz) {
   STATE.vel.z += dz * p * 0.5;
   addLog(`THRUST [${dx},${dy},${dz}] × ${p.toFixed(1)}`, 'info');
 }
-
 function stopThrust() {
   STATE.vel.x *= 0.5; STATE.vel.y *= 0.5; STATE.vel.z *= 0.5;
   addLog('THRUST REDUCED 50%', 'warn');
 }
-
 function fullStop() {
   STATE.vel.x = 0; STATE.vel.y = 0; STATE.vel.z = 0;
-  addLog('FULL STOP', 'warn');
+  addLog('FULL STOP ENGAGED', 'warn');
 }
-
 function setMode(mode) {
   STATE.mode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -756,154 +870,279 @@ function setMode(mode) {
   addLog(`MODE: ${mode.toUpperCase()}`, 'info');
 }
 
-// NASA FIRE API
-async function fetchGlobalFires() {
-  addLog('SCANNING GLOBAL FIRES — MODIS/VIIRS NRT...', 'fire');
-  document.getElementById('fire-status').textContent = 'SCANNING';
-  
-  // NOTE: FIRMS API requires a MAP_KEY which users must register for at firms.modaps.eosdis.nasa.gov
-  // For demonstration, we'll simulate the response structure
-  
-  addLog('⚠ FIRMS API requires MAP_KEY registration', 'warn');
-  addLog('Visit: firms.modaps.eosdis.nasa.gov/api/map_key/', 'info');
-  
-  // Simulated fire data (real API would return CSV/JSON)
-  const simulatedFires = [
-    { latitude: -33.8, longitude: 151.2, brightness: 335.4, confidence: 95, acq_date: '2026-02-17' },
-    { latitude: 34.0, longitude: -118.2, brightness: 328.1, confidence: 88, acq_date: '2026-02-17' },
-    { latitude: -15.8, longitude: -47.9, brightness: 342.7, confidence: 92, acq_date: '2026-02-17' }
-  ];
-  
-  STATE.fires = simulatedFires;
-  document.getElementById('fire-detected').textContent = simulatedFires.length;
-  document.getElementById('fire-status').textContent = 'ACTIVE';
-  document.getElementById('fire-meter').style.width = '75%';
-  
-  const list = document.getElementById('fire-list');
-  list.innerHTML = simulatedFires.map(f => `
+// ============================================================
+// NASA FIRE API  — with CORS proxy fallback
+// ============================================================
+// FIRMS API has CORS restrictions when called from browsers.
+// We use a reliable public CORS proxy as a transparent relay.
+async function firmsFetch(endpoint) {
+  const base    = `https://firms.modaps.eosdis.nasa.gov/api/area/csv/${FIRMS_MAP_KEY}`;
+  const direct  = `${base}/${endpoint}`;
+  const proxied = `https://corsproxy.io/?${encodeURIComponent(direct)}`;
+
+  try {
+    const res = await fetch(direct);
+    if (res.ok) return res.text();
+  } catch(_) {}
+
+  // Fallback to proxy
+  const res = await fetch(proxied);
+  if (!res.ok) throw new Error(`FIRMS HTTP ${res.status}`);
+  return res.text();
+}
+
+function parseFIRMScsv(csv) {
+  const lines   = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim());
+
+  const idx = k => headers.indexOf(k);
+  return lines.slice(1).map(line => {
+    const v = line.split(',');
+    return {
+      latitude:   parseFloat(v[idx('latitude')]),
+      longitude:  parseFloat(v[idx('longitude')]),
+      bright_ti4: parseFloat(v[idx('bright_ti4')]) || 0,
+      confidence: v[idx('confidence')]?.trim() || 'n',
+      frp:        parseFloat(v[idx('frp')]) || 0,
+      acq_date:   v[idx('acq_date')]?.trim() || '',
+      acq_time:   v[idx('acq_time')]?.trim() || '',
+    };
+  }).filter(f => !isNaN(f.latitude) && !isNaN(f.longitude));
+}
+
+function updateFireUI(fires, regionLabel) {
+  STATE.fires = fires;
+  document.getElementById('fire-detected').textContent = fires.length;
+  document.getElementById('fire-coverage').textContent = regionLabel;
+  document.getElementById('fire-status').textContent   = fires.length ? 'ACTIVE' : 'CLEAR';
+  document.getElementById('fire-meter').style.width    = `${Math.min(100, fires.length / 10)}%`;
+
+  document.getElementById('fire-list').innerHTML = fires.slice(0, 12).map(f => `
     <div class="data-item fire">
-      <div class="item-title">🔥 FIRE DETECTED</div>
+      <div class="item-title">🔥 ${f.acq_date || 'LIVE'} ${f.acq_time ? f.acq_time.substring(0,2)+':'+f.acq_time.substring(2) : ''}</div>
       <div class="item-meta">LAT ${f.latitude.toFixed(2)} LON ${f.longitude.toFixed(2)}</div>
-      <div class="item-meta">BRIGHTNESS ${f.brightness}K | CONF ${f.confidence}%</div>
+      <div class="item-meta">BRIGHTNESS ${f.bright_ti4 || '–'}K | FRP ${f.frp || '–'} MW | CONF ${f.confidence}</div>
     </div>
   `).join('');
-  
-  addLog(`${simulatedFires.length} ACTIVE FIRES DETECTED`, 'fire');
+
+  addLog(`${fires.length} ACTIVE FIRES — ${regionLabel}`, 'fire');
+}
+
+async function fetchGlobalFires() {
+  addLog('SCANNING GLOBAL FIRES — VIIRS NOAA-21 NRT…', 'fire');
+  document.getElementById('fire-status').textContent = 'SCANNING';
+  try {
+    const csv   = await firmsFetch('VIIRS_NOAA21_NRT/world/1');
+    const fires = parseFIRMScsv(csv);
+    updateFireUI(fires, 'GLOBAL');
+  } catch (err) {
+    addLog(`FIRE QUERY ERROR: ${err.message}`, 'error');
+    document.getElementById('fire-status').textContent = 'ERROR';
+    useDemoFires('GLOBAL');
+  }
 }
 
 async function fetchUSFires() {
-  addLog('QUERYING US/CANADA FIRE DATA...', 'fire');
-  addLog('REGION: NORTH AMERICA — FIRMS US/CANADA', 'info');
-  addLog('⚠ Requires FIRMS MAP_KEY for live data', 'warn');
+  addLog('QUERYING US/CANADA FIRE DATA — CONUS…', 'fire');
+  document.getElementById('fire-status').textContent = 'SCANNING';
+  // FIRMS area: lat_min,lon_min,lat_max,lon_max
+  try {
+    const csv   = await firmsFetch('VIIRS_NOAA21_NRT/USA_contiguous_and_Hawaii/1');
+    const fires = parseFIRMScsv(csv);
+    updateFireUI(fires, 'US/CANADA');
+  } catch (err) {
+    addLog(`US FIRE QUERY ERROR: ${err.message}`, 'error');
+    useDemoFires('US/CANADA');
+  }
 }
 
 async function fetchAustraliaFires() {
-  addLog('QUERYING AUSTRALIA/NZ FIRE DATA...', 'fire');
-  addLog('REGION: OCEANIA — VIIRS NOAA-20/21', 'info');
+  addLog('QUERYING AUSTRALIA/NZ FIRE DATA…', 'fire');
+  document.getElementById('fire-status').textContent = 'SCANNING';
+  try {
+    const csv   = await firmsFetch('VIIRS_NOAA21_NRT/Australia_and_New_Zealand/1');
+    const fires = parseFIRMScsv(csv);
+    updateFireUI(fires, 'AUSTRALIA/NZ');
+  } catch (err) {
+    addLog(`AU FIRE QUERY ERROR: ${err.message}`, 'error');
+    useDemoFires('AUSTRALIA/NZ');
+  }
 }
 
-// NASA ICE API
-async function fetchIceData() {
-  addLog('QUERYING ICE VELOCITY — ITS_LIVE PROJECT...', 'ice');
-  document.getElementById('ice-status').textContent = 'QUERYING';
-  
+// Demo fires for offline/CORS-blocked environments
+function useDemoFires(region) {
+  const demo = [
+    { latitude: 37.7,  longitude: -119.5, bright_ti4: 340, frp: 120, confidence: 'h', acq_date: 'DEMO', acq_time: '' },
+    { latitude: -33.9, longitude: 151.2,  bright_ti4: 325, frp:  80, confidence: 'h', acq_date: 'DEMO', acq_time: '' },
+    { latitude: 51.5,  longitude:  10.0,  bright_ti4: 310, frp:  45, confidence: 'n', acq_date: 'DEMO', acq_time: '' },
+    { latitude:-15.0,  longitude: -47.0,  bright_ti4: 360, frp: 200, confidence: 'h', acq_date: 'DEMO', acq_time: '' },
+    { latitude: 60.0,  longitude: 100.0,  bright_ti4: 345, frp: 150, confidence: 'h', acq_date: 'DEMO', acq_time: '' },
+    { latitude: 10.0,  longitude:   5.0,  bright_ti4: 350, frp: 180, confidence: 'h', acq_date: 'DEMO', acq_time: '' },
+  ];
+  updateFireUI(demo, `${region} (DEMO)`);
+  addLog('SHOWING DEMO FIRE DATA — CORS RESTRICTED', 'warn');
+}
+
+// ============================================================
+// NASA ICE DATA — with proxy fallback
+// ============================================================
+async function fetchCSVWithFallback(url) {
+  const proxied = `https://corsproxy.io/?${encodeURIComponent(url)}`;
   try {
-    // Query NASA CMR for ITS_LIVE collections
-    const url = 'https://cmr.earthdata.nasa.gov/search/collections.json?keyword=ITS_LIVE&page_size=5';
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${NASA_TOKEN}` }
-    });
-    
-    const data = await response.json();
-    const collections = data.feed.entry;
-    
-    STATE.iceData = collections;
-    document.getElementById('ice-status').textContent = 'TRACKING';
-    
+    const r = await fetch(url);
+    if (r.ok) return r.text();
+  } catch(_) {}
+  const r = await fetch(proxied);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.text();
+}
+
+function parseIceCSV(csv) {
+  return csv.split('\n')
+    .slice(2) // skip 2-line header
+    .map(line => {
+      const parts = line.split(',');
+      if (parts.length < 4) return null;
+      const year = parts[0].trim(), month = parts[1].trim(), day = parts[2].trim();
+      const extent = parseFloat(parts[3]);
+      if (isNaN(extent)) return null;
+      return { date: `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`, extent };
+    })
+    .filter(Boolean);
+}
+
+async function fetchIceData() {
+  addLog('QUERYING NSIDC SEA ICE EXTENT — NORTH + SOUTH…', 'ice');
+  document.getElementById('ice-status').textContent = 'QUERYING';
+
+  const northURL = 'https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv';
+  const southURL = 'https://noaadata.apps.nsidc.org/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv';
+
+  try {
+    const [northCSV, southCSV] = await Promise.all([
+      fetchCSVWithFallback(northURL),
+      fetchCSVWithFallback(southURL),
+    ]);
+    STATE.iceDataNorth = parseIceCSV(northCSV);
+    STATE.iceDataSouth = parseIceCSV(southCSV);
+
     const list = document.getElementById('ice-list');
-    list.innerHTML = collections.slice(0,3).map(c => `
-      <div class="data-item ice">
-        <div class="item-title">❄ ${c.title.substring(0,40)}...</div>
-        <div class="item-meta">${c.data_center || 'NSIDC'}</div>
-      </div>
-    `).join('');
-    
-    addLog(`ITS_LIVE: ${collections.length} ICE VELOCITY DATASETS`, 'ice');
-  } catch (error) {
-    addLog(`ICE QUERY ERROR: ${error.message}`, 'warn');
+    list.innerHTML = '';
+
+    if (STATE.iceDataNorth.length) {
+      const d = STATE.iceDataNorth[STATE.iceDataNorth.length-1];
+      list.innerHTML += `<div class="data-item ice"><div class="item-title">❄ ARCTIC SEA ICE</div><div class="item-meta">${d.date}: ${d.extent.toFixed(2)} M km²</div></div>`;
+      document.getElementById('greenland-status').textContent = `${d.extent.toFixed(2)} Mkm²`;
+    }
+    if (STATE.iceDataSouth.length) {
+      const d = STATE.iceDataSouth[STATE.iceDataSouth.length-1];
+      list.innerHTML += `<div class="data-item ice"><div class="item-title">❄ ANTARCTIC SEA ICE</div><div class="item-meta">${d.date}: ${d.extent.toFixed(2)} M km²</div></div>`;
+      document.getElementById('antarctica-status').textContent = `${d.extent.toFixed(2)} Mkm²`;
+    }
+
+    document.getElementById('ice-status').textContent = 'TRACKING';
+    addLog(`ICE DATA: Arctic ${STATE.iceDataNorth.length} pts | Antarctic ${STATE.iceDataSouth.length} pts`, 'ice');
+  } catch(err) {
+    addLog(`ICE QUERY ERROR: ${err.message}`, 'error');
+    document.getElementById('ice-status').textContent = 'ERROR';
+    // Use representative demo values
+    STATE.iceDataNorth = [{ date: 'DEMO', extent: 12.5 }];
+    STATE.iceDataSouth = [{ date: 'DEMO', extent: 11.0 }];
+    addLog('USING DEMO ICE EXTENTS', 'warn');
   }
 }
 
 async function fetchGreenlandData() {
-  addLog('GREENLAND ICE MAPPING PROJECT — GIMP...', 'ice');
-  addLog('TRACKING: JAKOBSHAVN, PETERMANN, HELHEIM GLACIERS', 'info');
+  addLog('GREENLAND ICE MAPPING PROJECT — GIMP…', 'ice');
+  addLog('TRACKING: JAKOBSHAVN, PETERMANN, HELHEIM', 'info');
   addLog('DATA SOURCE: RADARSAT-2, TerraSAR-X, ALOS', 'data');
 }
-
 async function fetchAntarcticaData() {
-  addLog('ANTARCTICA ICE SHEETS — ICESat-2 ALTIMETRY...', 'ice');
+  addLog('ANTARCTICA ICE SHEETS — ICESat-2 ALTIMETRY…', 'ice');
   addLog('MONITORING: PINE ISLAND, THWAITES, ROSS ICE SHELF', 'info');
   addLog('PRECISION: ±4mm ANNUAL HEIGHT CHANGE', 'data');
 }
 
+// ============================================================
 // NASA CMR
+// ============================================================
 async function fetchNASACollections() {
-  addLog('NASA CMR: QUERYING CLOUD-HOSTED COLLECTIONS...', 'nasa');
-  document.getElementById('cmr-status').textContent = 'QUERY';
-  
+  addLog('NASA CMR: QUERYING CLOUD-HOSTED COLLECTIONS…', 'nasa');
+  document.getElementById('cmr-status').textContent = 'QUERYING';
+
+  const url = 'https://cmr.earthdata.nasa.gov/search/collections.json?cloud_hosted=true&has_granules=true&page_size=8';
   try {
-    const url = 'https://cmr.earthdata.nasa.gov/search/collections.json?cloud_hosted=true&has_granules=true&page_size=8';
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${NASA_TOKEN}` }
-    });
-    
-    const data = await response.json();
-    const collections = data.feed.entry;
-    
-    STATE.nasaCollections = collections;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${NASA_TOKEN}` } });
+    if (!res.ok) throw new Error(`CMR HTTP ${res.status}`);
+    const data = await res.json();
+    STATE.nasaCollections = data.feed.entry || [];
     document.getElementById('cmr-status').textContent = 'ONLINE';
-    
-    const list = document.getElementById('nasa-list');
-    list.innerHTML = collections.map(c => `
+
+    document.getElementById('nasa-list').innerHTML = STATE.nasaCollections.map(c => `
       <div class="data-item">
-        <div class="item-title">${c.title.substring(0,45)}...</div>
-        <div class="item-meta">${c.data_center || 'NASA EOSDIS'}</div>
+        <div class="item-title">${(c.title || '').substring(0,42)}…</div>
+        <div class="item-meta">${c.data_center || 'NASA'}</div>
       </div>
     `).join('');
-    
-    addLog(`CMR: ${collections.length} COLLECTIONS RETRIEVED`, 'nasa');
-  } catch (error) {
-    addLog(`CMR ERROR: ${error.message}`, 'warn');
+
+    addLog(`NASA COLLECTIONS LOADED: ${STATE.nasaCollections.length}`, 'nasa');
+  } catch(err) {
+    document.getElementById('cmr-status').textContent = 'ERROR';
+    addLog(`CMR ERROR: ${err.message}`, 'error');
   }
 }
 
-// MOUSE/KEYBOARD
+// ============================================================
+// LOG
+// ============================================================
+const logEntries = [];
+function addLog(msg, type = 'info') {
+  const t = new Date().toISOString().slice(11, 19);
+  logEntries.unshift({ t, msg, type });
+  if (logEntries.length > 80) logEntries.pop();
+
+  document.getElementById('log-console').innerHTML = logEntries.slice(0, 14).map(l =>
+    `<div class="log-line"><span class="log-time">${l.t}</span><span class="log-${l.type}">${l.msg}</span></div>`
+  ).join('');
+}
+
+// ============================================================
+// MOUSE / KEYBOARD INPUT
+// ============================================================
 mainCanvas.addEventListener('mousedown', e => {
   STATE.isDragging = true;
-  STATE.lastMouse = { x: e.clientX, y: e.clientY };
+  STATE.lastMouse  = { x: e.clientX, y: e.clientY };
+  mainCanvas.style.cursor = 'grabbing';
 });
 document.addEventListener('mousemove', e => {
   if (!STATE.isDragging) return;
   const dx = e.clientX - STATE.lastMouse.x;
   const dy = e.clientY - STATE.lastMouse.y;
-  STATE.viewAngleY += dx * 0.003;
-  STATE.viewAngleX += dy * 0.003;
-  STATE.lastMouse = { x: e.clientX, y: e.clientY };
+  STATE.rotY      += dx * 0.006;
+  STATE.rotX      += dy * 0.006;
+  // Clamp vertical rotation to avoid flipping
+  STATE.rotX       = Math.max(-Math.PI/2 * 0.95, Math.min(Math.PI/2 * 0.95, STATE.rotX));
+  STATE.lastMouse  = { x: e.clientX, y: e.clientY };
 });
-document.addEventListener('mouseup', () => STATE.isDragging = false);
+document.addEventListener('mouseup', () => {
+  STATE.isDragging = false;
+  mainCanvas.style.cursor = 'grab';
+});
+mainCanvas.style.cursor = 'grab';
 
 mainCanvas.addEventListener('wheel', e => {
-  STATE.fov = Math.max(0.1, Math.min(90, STATE.fov * (e.deltaY > 0 ? 1.1 : 0.9)));
+  STATE.zoom = Math.max(0.4, Math.min(3.0, STATE.zoom - e.deltaY * 0.001));
   e.preventDefault();
 }, { passive: false });
 
 document.addEventListener('keydown', e => {
   switch(e.key) {
-    case 'ArrowUp': case 'w': thrust(0, 0, -1); break;
-    case 'ArrowDown': case 's': thrust(0, 0, 1); break;
-    case 'ArrowLeft': case 'a': thrust(-1, 0, 0); break;
-    case 'ArrowRight': case 'd': thrust(1, 0, 0); break;
-    case ' ': fullStop(); e.preventDefault(); break;
+    case 'ArrowUp':    case 'w': thrust(0,-1,0); break;
+    case 'ArrowDown':  case 's': thrust(0, 1,0); break;
+    case 'ArrowLeft':  case 'a': thrust(-1,0,0); break;
+    case 'ArrowRight': case 'd': thrust( 1,0,0); break;
+    case ' ':                    fullStop(); e.preventDefault(); break;
   }
 });
 
@@ -917,23 +1156,12 @@ document.getElementById('redshift-range').addEventListener('input', e => {
   STATE.redshift = parseInt(e.target.value);
 });
 
-// LOG
-const logs = [];
-function addLog(msg, type = 'info') {
-  const t = new Date().toISOString().slice(11,19);
-  logs.unshift({ t, msg, type });
-  if (logs.length > 60) logs.pop();
-  
-  const el = document.getElementById('log-console');
-  el.innerHTML = logs.slice(0, 14).map(l =>
-    `<div class="log-line"><span class="log-time">${l.t}</span><span class="log-${l.type}">${l.msg}</span></div>`
-  ).join('');
-}
-
+// ============================================================
 // MAIN LOOP
+// ============================================================
 function loop() {
   renderStarfield();
-  if (STATE.mode === 'space') renderSpace();
+  if (STATE.mode === 'earth') renderEarth();
   else renderOcean();
   renderWaveform();
   renderSpectrum();
@@ -942,25 +1170,40 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
+// ============================================================
 // INIT
-window.addEventListener('resize', () => { initStars(); resizeCanvases(); });
-initStars();
-resizeCanvases();
+// ============================================================
+window.addEventListener('resize', () => {
+  initStars();
+  resizeMainCanvas();
+});
 
-addLog('PRIMORDIAL COMMAND CENTER v3.0 ULTIMATE', 'data');
-addLog('NASA EARTHDATA: AUTHENTICATED', 'nasa');
+initStars();
+resizeMainCanvas();
+
+addLog('PRIMORDIAL COMMAND CENTER v3.0 FIXED', 'data');
+addLog('NASA EARTHDATA: TOKEN AUTHENTICATED', 'nasa');
 addLog('MODIS/VIIRS FIRE TRACKING: READY', 'fire');
-addLog('ICESat-2 / ITS_LIVE ICE MONITOR: ACTIVE', 'ice');
-addLog('CMR API: ONLINE — 32,000+ COLLECTIONS', 'nasa');
-addLog('SYSTEM NOMINAL — AWAITING COMMANDS', 'info');
+addLog('ICESat-2 / NSIDC ICE MONITOR: ACTIVE', 'ice');
+addLog('EARTH GLOBE RENDERER: OPERATIONAL', 'info');
+addLog('CORS PROXY FAILOVER: ENABLED', 'data');
+addLog('DRAG GLOBE TO ROTATE ● SCROLL TO ZOOM', 'info');
+addLog('SYSTEM NOMINAL — AWAITING COMMANDS', 'data');
 
 loop();
 
-// Auto-fetch on startup
-setTimeout(() => {
-  fetchNASACollections();
-  fetchIceData();
-}, 2000);
+// Auto-fetch on startup with stagger
+setTimeout(() => fetchNASACollections(), 1500);
+setTimeout(() => fetchIceData(),          3000);
+setTimeout(() => fetchGlobalFires(),      4500);
+
+// Periodic refresh every 5 minutes
+setInterval(async () => {
+  await fetchNASACollections();
+  await fetchIceData();
+  await fetchGlobalFires();
+  addLog('LIVE FEEDS REFRESHED', 'data');
+}, 300000);
 </script>
 </body>
 </html>
